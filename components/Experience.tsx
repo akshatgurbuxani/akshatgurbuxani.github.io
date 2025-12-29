@@ -2,141 +2,75 @@
 
 import { motion } from "framer-motion";
 import { EXPERIENCES } from "@/data";
-import type { Experience as ExperienceType, BulletPoint } from "@/types";
+import type { Experience as ExperienceType } from "@/types";
 
 // =============================================================================
 // Animation Variants
 // =============================================================================
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 },
+const revealVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { 
+    opacity: 1, 
+    x: 0, 
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
   },
 };
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
-};
-
-// =============================================================================
-// Section Header
-// =============================================================================
-
-function SectionHeader() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-16"
-    >
-      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-        Experience
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto" />
-    </motion.div>
-  );
-}
-
-// =============================================================================
-// Bullet Point with Highlights
-// =============================================================================
-
-function BulletPointText({ bullet }: { bullet: BulletPoint }) {
-  // Simple version - just render the text with a bullet point
-  return (
-    <li className="text-gray-600 dark:text-gray-400 leading-relaxed">
-      {bullet.text}
-    </li>
-  );
-}
-
-// =============================================================================
-// Technology Tags
-// =============================================================================
-
-function TechnologyTags({ technologies }: { technologies?: string[] }) {
-  if (!technologies || technologies.length === 0) return null;
-
-  return (
-    <div className="flex flex-wrap gap-2 mt-4">
-      {technologies.map((tech, index) => (
-        <span
-          key={index}
-          className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium"
-        >
-          {tech}
-        </span>
-      ))}
-    </div>
-  );
-}
 
 // =============================================================================
 // Experience Card
 // =============================================================================
 
-interface ExperienceCardProps {
-  experience: ExperienceType;
-  index: number;
-  isLast: boolean;
-}
-
-function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
+function ExperienceItem({ experience, index }: { experience: ExperienceType; index: number }) {
   return (
     <motion.div
-      className="relative pl-8 md:pl-12"
-      variants={itemVariants}
+      variants={revealVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-16 border-b border-gray-100 dark:border-neutral-900 last:border-0"
     >
-      {/* Timeline line */}
-      {!isLast && (
-        <div className="absolute left-0 md:left-4 top-8 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-pink-500" />
-      )}
+      {/* Number/Date */}
+      <div className="md:col-span-2">
+        <p className="text-[10px] font-bold tracking-[0.3em] text-gray-400 mb-1">
+          {String(index + 1).padStart(2, "0")} / 03
+        </p>
+        <p className="text-sm font-medium uppercase tracking-tight">
+          {experience.startDate} — {experience.endDate}
+        </p>
+      </div>
 
-      {/* Timeline dot */}
-      <motion.div
-        className="absolute left-0 md:left-4 top-2 w-4 h-4 -ml-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg"
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: index * 0.1 }}
-      />
+      {/* Role & Company */}
+      <div className="md:col-span-5">
+        <h3 className="text-3xl font-bold uppercase mb-2 tracking-tighter leading-none group-hover:italic transition-all duration-500">
+          {experience.role}
+        </h3>
+        <p className="text-lg font-serif italic text-gray-500 dark:text-gray-400">
+          {experience.company}
+        </p>
+        <p className="text-xs uppercase tracking-widest text-gray-400 mt-4">
+          {experience.location}
+        </p>
+      </div>
 
-      {/* Content card */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow ml-4">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {experience.role}
-            </h3>
-            <p className="text-lg text-purple-600 dark:text-purple-400 font-semibold">
-              {experience.company}
-            </p>
-          </div>
-          <div className="text-right mt-2 md:mt-0">
-            <p className="text-gray-600 dark:text-gray-400 font-medium">
-              {experience.startDate} – {experience.endDate}
-            </p>
-            <p className="text-gray-500 dark:text-gray-500 text-sm">
-              {experience.location}
-            </p>
-          </div>
-        </div>
-
-        {/* Description bullets */}
-        <ul className="space-y-3 list-disc list-outside ml-5">
-          {experience.description.map((bullet, bulletIndex) => (
-            <BulletPointText key={bulletIndex} bullet={bullet} />
+      {/* Description */}
+      <div className="md:col-span-5 md:col-start-8">
+        <ul className="space-y-4">
+          {experience.description.map((bullet, i) => (
+            <li key={i} className="text-base text-gray-600 dark:text-gray-400 leading-relaxed font-light">
+              {bullet.text}
+            </li>
           ))}
         </ul>
-
+        
         {/* Technologies */}
-        <TechnologyTags technologies={experience.technologies} />
+        <div className="flex flex-wrap gap-x-4 gap-y-2 mt-8">
+          {experience.technologies?.map((tech, i) => (
+            <span key={i} className="text-[10px] uppercase tracking-[0.2em] font-bold text-black dark:text-white">
+              {tech}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
@@ -148,31 +82,37 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
 
 export default function Experience() {
   return (
-    <section
-      id="experience"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800"
-    >
-      <div className="max-w-4xl mx-auto">
-        <SectionHeader />
+    <section id="experience" className="py-24 px-4 sm:px-10 lg:px-20 bg-white dark:bg-black">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-end mb-16 md:mb-24">
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-large font-bold tracking-tighter"
+          >
+            History
+          </motion.h2>
+          <motion.p 
+             initial={{ opacity: 0 }}
+             whileInView={{ opacity: 1 }}
+             viewport={{ once: true }}
+             className="text-xs uppercase tracking-[0.3em] text-gray-400 hidden sm:block"
+          >
+            Work Log 2021 — 2025
+          </motion.p>
+        </div>
 
-        <motion.div
-          className="space-y-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <div className="border-t border-black dark:border-white">
           {EXPERIENCES.map((experience, index) => (
-            <ExperienceCard
-              key={experience.id}
-              experience={experience}
-              index={index}
-              isLast={index === EXPERIENCES.length - 1}
+            <ExperienceItem 
+              key={experience.id} 
+              experience={experience} 
+              index={index} 
             />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
-
