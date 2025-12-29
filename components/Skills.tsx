@@ -2,59 +2,64 @@
 
 import { motion } from "framer-motion";
 import { SKILL_CATEGORIES } from "@/data";
-import type { SkillCategory } from "@/types";
+import type { SkillCategory, Skill } from "@/types";
 
 // =============================================================================
-// Animation Variants
+// Skill Item
 // =============================================================================
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
+function SkillProgressBar({ skill, index }: { skill: Skill; index: number }) {
+  const totalBlocks = 20;
+  const activeBlocks = Math.round((skill.proficiency / 100) * totalBlocks);
+  const blocks = "█".repeat(activeBlocks) + "░".repeat(totalBlocks - activeBlocks);
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
-// =============================================================================
-// Skill Category Component
-// =============================================================================
-
-function SkillGroup({ category }: { category: SkillCategory }) {
   return (
-    <motion.div 
-      variants={itemVariants}
-      className="py-10 border-t border-gray-100 dark:border-neutral-900"
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.05 }}
+      className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center group"
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <div className="md:col-span-4">
-          <h3 className="text-xl font-bold uppercase tracking-tight">
-            {category.name}
-          </h3>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400 mt-2">
-            Expertise Area
-          </p>
-        </div>
-        
-        <div className="md:col-span-8">
-          <div className="flex flex-wrap gap-x-12 gap-y-6">
-            {category.skills.map((skill) => (
-              <div key={skill.name} className="group">
-                <p className="text-2xl font-serif italic text-gray-500 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors duration-300">
-                  {skill.name}
-                </p>
-                <div className="w-0 h-px bg-black dark:bg-white transition-all duration-500 group-hover:w-full mt-1" />
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="sm:col-span-4">
+        <span className="text-sm font-bold uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">
+          {skill.name}
+        </span>
+      </div>
+      <div className="sm:col-span-6 flex items-center gap-4">
+        <span className="text-terminal-primary font-mono text-xs hidden sm:block">[</span>
+        <span className="text-terminal-primary font-mono tracking-tighter text-xs">
+          {blocks}
+        </span>
+        <span className="text-terminal-primary font-mono text-xs hidden sm:block">]</span>
+      </div>
+      <div className="sm:col-span-2 text-right">
+        <span className="text-[10px] font-bold opacity-50">{skill.proficiency}%</span>
       </div>
     </motion.div>
+  );
+}
+
+// =============================================================================
+// Skill Category
+// =============================================================================
+
+function SkillCategorySection({ category, catIndex }: { category: SkillCategory; catIndex: number }) {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <h3 className="text-lg font-bold bg-terminal-primary text-black px-2">
+          {category.name.toUpperCase().replace(/\s+/g, "_")}
+        </h3>
+        <div className="h-px bg-terminal-primary/20 flex-1" />
+      </div>
+      
+      <div className="grid gap-4 pl-4 border-l border-terminal-primary/10">
+        {category.skills.map((skill, i) => (
+          <SkillProgressBar key={skill.name} skill={skill} index={catIndex * 10 + i} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -64,50 +69,48 @@ function SkillGroup({ category }: { category: SkillCategory }) {
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-24 px-4 sm:px-10 lg:px-20 bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col mb-20">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-large font-bold tracking-tighter mb-4"
-          >
-            Toolkit
-          </motion.h2>
-          <motion.div 
-             initial={{ scaleX: 0 }}
-             whileInView={{ scaleX: 1 }}
-             viewport={{ once: true }}
-             transition={{ duration: 1, ease: "easeInOut" }}
-             className="w-full h-px bg-black dark:bg-white origin-left mb-20"
-          />
+    <section id="skills" className="py-24 px-4 sm:px-10 lg:px-20 bg-black text-terminal-primary">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Section Title */}
+        <div className="flex items-center gap-4 mb-20">
+          <span className="text-terminal-primary opacity-70">admin@akshat.dev:~$</span>
+          <h2 className="text-2xl font-bold uppercase tracking-[0.2em] border-b-2 border-terminal-primary">
+            ./analyze_toolkit.sh --detailed
+          </h2>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="space-y-4"
-        >
-          {SKILL_CATEGORIES.map((category) => (
-            <SkillGroup key={category.id} category={category} />
+        {/* Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16">
+          {SKILL_CATEGORIES.map((category, index) => (
+            <SkillCategorySection key={category.id} category={category} catIndex={index} />
           ))}
-        </motion.div>
-        
-        <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div className="p-10 bg-neutral-50 dark:bg-neutral-900 border border-transparent hover:border-black dark:hover:border-white transition-all duration-500">
-            <p className="text-4xl font-bold mb-4 italic font-serif">87%</p>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400">NFT Spam Detection Accuracy</p>
-          </div>
-          <div className="p-10 bg-neutral-50 dark:bg-neutral-900 border border-transparent hover:border-black dark:hover:border-white transition-all duration-500">
-            <p className="text-4xl font-bold mb-4 italic font-serif">70%</p>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400">Response Accuracy Improvement</p>
-          </div>
-          <div className="p-10 bg-neutral-50 dark:bg-neutral-900 border border-transparent hover:border-black dark:hover:border-white transition-all duration-500">
-            <p className="text-4xl font-bold mb-4 italic font-serif">85%</p>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400">Manual Effort Reduction</p>
+        </div>
+
+        {/* System Stats Footer */}
+        <div className="mt-32 p-8 border border-terminal-primary/20 bg-terminal-primary/5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+            <div className="space-y-2">
+              <p className="text-[10px] uppercase font-bold opacity-50">Core_Engine_Accuracy</p>
+              <div className="flex items-end gap-2 text-3xl font-bold italic">
+                <span>87</span>
+                <span className="text-xs pb-1">PCT</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-[10px] uppercase font-bold opacity-50">Model_Optimization</p>
+              <div className="flex items-end gap-2 text-3xl font-bold italic">
+                <span>70</span>
+                <span className="text-xs pb-1">PCT_GAIN</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-[10px] uppercase font-bold opacity-50">Operational_Efficiency</p>
+              <div className="flex items-end gap-2 text-3xl font-bold italic">
+                <span>85</span>
+                <span className="text-xs pb-1">PCT_REDUCTION</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

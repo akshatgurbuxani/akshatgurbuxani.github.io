@@ -6,10 +6,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 // Types
 // =============================================================================
 
-type Theme = "light" | "dark";
+type TerminalTheme = "matrix" | "amber" | "white";
 
 interface ThemeContextType {
-  theme: Theme;
+  theme: TerminalTheme;
   toggleTheme: () => void;
   mounted: boolean;
 }
@@ -25,26 +25,37 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 // =============================================================================
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<TerminalTheme>("matrix");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+    const savedTheme = localStorage.getItem("terminal-theme") as TerminalTheme | null;
+    const initialTheme = savedTheme || "matrix";
     setTheme(initialTheme);
-    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    applyThemeClass(initialTheme);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  const applyThemeClass = (newTheme: TerminalTheme) => {
+    document.documentElement.classList.remove("theme-matrix", "theme-amber", "theme-white");
+    if (newTheme !== "matrix") {
+      document.documentElement.classList.add(`theme-${newTheme}`);
+    } else {
+      document.documentElement.classList.add("theme-matrix");
+    }
   };
 
-  // Always provide context, but include mounted state
+  const toggleTheme = () => {
+    const themes: TerminalTheme[] = ["matrix", "amber", "white"];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const nextTheme = themes[nextIndex];
+    
+    setTheme(nextTheme);
+    localStorage.setItem("terminal-theme", nextTheme);
+    applyThemeClass(nextTheme);
+  };
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
       {children}

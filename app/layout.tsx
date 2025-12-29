@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
-const inter = Inter({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
-  title: "AKSHAT GURBUXANI",
-  description: "AI/ML Engineer | Portfolio",
+  title: "AKSHAT_GURBUXANI | SYSTEM_PORTFOLIO",
+  description: "AI/ML Engineer Terminal | Accessing Data...",
 };
 
 export default function RootLayout({
@@ -24,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable}`}>
-      <body className="font-sans">
+    <html lang="en" suppressHydrationWarning className={`${jetbrainsMono.variable}`}>
+      <body className="font-mono">
         <ThemeProvider>
           {children}
         </ThemeProvider>

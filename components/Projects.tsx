@@ -5,81 +5,89 @@ import { PROJECTS } from "@/data";
 import type { Project } from "@/types";
 
 // =============================================================================
-// Animation Variants
-// =============================================================================
-
-const projectReveal = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } 
-  },
-};
-
-// =============================================================================
 // Project Card
 // =============================================================================
 
-function ProjectItem({ project, index }: { project: Project; index: number }) {
+function ProjectFolder({ project, index, isLast }: { project: Project; index: number; isLast: boolean }) {
+  const lineChar = isLast ? "└──" : "├──";
+
   return (
     <motion.div
-      variants={projectReveal}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      className={`relative group mb-32 md:mb-64 last:mb-0 ${
-        index % 2 === 0 ? "md:pr-20" : "md:pl-20 md:text-right"
-      }`}
+      initial={{ opacity: 0, x: -10 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className="space-y-4"
     >
-      <div className={`grid grid-cols-1 md:grid-cols-12 gap-8 items-center`}>
-        {/* Image/Visual Placeholder */}
-        <div className={`md:col-span-8 ${index % 2 === 0 ? "md:order-1" : "md:order-2 md:col-start-5"}`}>
-          <div className="aspect-[16/9] bg-neutral-100 dark:bg-neutral-900 relative overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <div className={`w-full h-full bg-gradient-to-br ${project.gradient} opacity-20`} />
-              <p className="absolute text-[10px] uppercase tracking-[0.4em] font-bold opacity-40">
-                Visual Concept {index + 1}
-              </p>
-            </motion.div>
+      {/* Folder Header */}
+      <div className="flex items-start gap-4">
+        <span className="text-gray-600 font-bold">{lineChar}</span>
+        <div className="group flex-1">
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="text-white text-xl font-bold bg-terminal-primary/10 px-2 py-1 border border-terminal-primary/30 group-hover:bg-terminal-primary group-hover:text-black transition-all">
+              [ DIR ] {project.title.toUpperCase().replace(/\s+/g, "_")}
+            </span>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-gray-500">
+              MODIFIED: {project.date.split(" – ")[0]}
+            </span>
           </div>
-        </div>
 
-        {/* Text Content */}
-        <div className={`md:col-span-4 ${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}>
-           <div className="space-y-6">
-              <p className="text-[10px] font-bold tracking-[0.3em] text-gray-400">
-                Project {String(index + 1).padStart(2, "0")}
-              </p>
-              <h3 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">
-                {project.title}
-              </h3>
-              <p className="text-lg font-serif italic text-gray-500 dark:text-gray-400 leading-snug">
-                {project.description}
-              </p>
-              <div className={`flex flex-wrap gap-x-4 gap-y-2 ${index % 2 === 0 ? "" : "md:justify-end"}`}>
-                {project.technologies.slice(0, 3).map((tech, i) => (
-                  <span key={i} className="text-[10px] uppercase tracking-[0.2em] font-bold">
-                    {tech}
-                  </span>
-                ))}
+          {/* Folder Content */}
+          <div className="ml-4 mt-6 border-l-2 border-dashed border-terminal-primary/20 pl-8 pb-10 space-y-6">
+            <p className="text-lg text-terminal-primary/80 italic font-serif leading-snug max-w-2xl">
+              &gt; {project.description}
+            </p>
+
+            {/* File List Style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 text-sm font-mono">
+              <div className="space-y-2">
+                <p className="text-white opacity-40 uppercase text-[10px] font-bold">Files_and_Assets</p>
+                <div className="space-y-1">
+                  {project.technologies.map((tech, i) => (
+                    <div key={i} className="flex gap-2">
+                      <span className="text-gray-600">├──</span>
+                      <span className="text-gray-400">{tech.toLowerCase()}.config</span>
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <span className="text-gray-600">└──</span>
+                    <span className="text-gray-400">README.md</span>
+                  </div>
+                </div>
               </div>
-              <div className="pt-6">
-                <a 
-                  href={project.githubUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="group relative inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
+
+              <div className="space-y-2">
+                <p className="text-white opacity-40 uppercase text-[10px] font-bold">Execution_Summary</p>
+                <div className="space-y-1">
+                  {project.highlights.slice(0, 3).map((h, i) => (
+                    <div key={i} className="flex gap-2 text-gray-400">
+                      <span className="text-terminal-primary opacity-50">#</span>
+                      <p className="text-[12px]">{h}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Project Link */}
+            <div className="pt-4">
+              <a 
+                href={project.githubUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 group/link border-b border-terminal-primary/30 pb-1 hover:border-terminal-primary transition-all"
+              >
+                <span className="text-xs font-bold uppercase tracking-widest">execute source_code --remote</span>
+                <motion.span 
+                  animate={{ x: [0, 5, 0] }} 
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="text-terminal-primary"
                 >
-                  <span>Case Study</span>
-                  <span className="block w-6 h-px bg-black dark:bg-white transition-all group-hover:w-12" />
-                </a>
-              </div>
-           </div>
+                  &gt;
+                </motion.span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -92,33 +100,28 @@ function ProjectItem({ project, index }: { project: Project; index: number }) {
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-32 px-4 sm:px-10 lg:px-20 bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col mb-24 md:mb-40">
-          <motion.p 
-             initial={{ opacity: 0 }}
-             whileInView={{ opacity: 1 }}
-             viewport={{ once: true }}
-             className="text-[10px] uppercase tracking-[0.5em] text-gray-400 mb-4"
-          >
-            Selected Works
-          </motion.p>
-          <motion.h2 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="text-huge font-bold tracking-tighter"
-          >
-            Gallery
-          </motion.h2>
+    <section id="projects" className="py-24 px-4 sm:px-10 lg:px-20 bg-black text-terminal-primary">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Section Title */}
+        <div className="flex items-center gap-4 mb-20">
+          <span className="text-terminal-primary opacity-70">admin@akshat.dev:~$</span>
+          <h2 className="text-2xl font-bold uppercase tracking-[0.2em] border-b-2 border-terminal-primary">
+            tree ./projects
+          </h2>
         </div>
 
-        <div className="space-y-20">
+        {/* Directory Structure */}
+        <div className="space-y-0">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="text-white text-xl font-bold">.</span>
+          </div>
           {PROJECTS.map((project, index) => (
-            <ProjectItem 
+            <ProjectFolder 
               key={project.id} 
               project={project} 
               index={index} 
+              isLast={index === PROJECTS.length - 1}
             />
           ))}
         </div>

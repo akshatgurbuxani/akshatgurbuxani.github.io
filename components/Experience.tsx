@@ -5,69 +5,57 @@ import { EXPERIENCES } from "@/data";
 import type { Experience as ExperienceType } from "@/types";
 
 // =============================================================================
-// Animation Variants
+// Experience Item
 // =============================================================================
 
-const revealVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { 
-    opacity: 1, 
-    x: 0, 
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
-  },
-};
+function LogEntry({ experience, index }: { experience: ExperienceType; index: number }) {
+  const timestamp = `202${5 - index}.04.12_08:30:4${index}`;
 
-// =============================================================================
-// Experience Card
-// =============================================================================
-
-function ExperienceItem({ experience, index }: { experience: ExperienceType; index: number }) {
   return (
     <motion.div
-      variants={revealVariants}
-      initial="hidden"
-      whileInView="visible"
+      initial={{ opacity: 0, x: -10 }}
+      whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
-      className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-16 border-b border-gray-100 dark:border-neutral-900 last:border-0"
+      transition={{ delay: index * 0.2 }}
+      className="group relative border-l-2 border-terminal-primary/20 pl-8 pb-16 last:pb-0"
     >
-      {/* Number/Date */}
-      <div className="md:col-span-2">
-        <p className="text-[10px] font-bold tracking-[0.3em] text-gray-400 mb-1">
-          {String(index + 1).padStart(2, "0")} / 03
-        </p>
-        <p className="text-sm font-medium uppercase tracking-tight">
-          {experience.startDate} — {experience.endDate}
-        </p>
-      </div>
+      {/* Node Dot */}
+      <div className="absolute -left-[9px] top-0 w-4 h-4 bg-black border-2 border-terminal-primary rounded-full group-hover:bg-terminal-primary transition-colors" />
 
-      {/* Role & Company */}
-      <div className="md:col-span-5">
-        <h3 className="text-3xl font-bold uppercase mb-2 tracking-tighter leading-none group-hover:italic transition-all duration-500">
-          {experience.role}
-        </h3>
-        <p className="text-lg font-serif italic text-gray-500 dark:text-gray-400">
-          {experience.company}
-        </p>
-        <p className="text-xs uppercase tracking-widest text-gray-400 mt-4">
-          {experience.location}
-        </p>
-      </div>
+      <div className="space-y-4">
+        {/* Log Header */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="text-gray-500 text-[10px] font-bold">[{timestamp}]</span>
+          <span className="text-terminal-primary font-bold uppercase tracking-widest text-lg">
+            {experience.role}
+          </span>
+          <span className="text-white opacity-50 font-serif italic">@ {experience.company}</span>
+        </div>
 
-      {/* Description */}
-      <div className="md:col-span-5 md:col-start-8">
-        <ul className="space-y-4">
+        {/* Date/Loc */}
+        <div className="flex gap-6 text-[10px] uppercase font-bold tracking-widest opacity-60">
+          <span>PERIOD: {experience.startDate} — {experience.endDate}</span>
+          <span>LOC: {experience.location.toUpperCase()}</span>
+        </div>
+
+        {/* Description List */}
+        <div className="space-y-2 max-w-3xl">
           {experience.description.map((bullet, i) => (
-            <li key={i} className="text-base text-gray-600 dark:text-gray-400 leading-relaxed font-light">
-              {bullet.text}
-            </li>
+            <div key={i} className="flex gap-3 text-gray-400 leading-relaxed text-sm">
+              <span className="text-terminal-primary opacity-50 mt-1">&gt;&gt;</span>
+              <p>{bullet.text}</p>
+            </div>
           ))}
-        </ul>
-        
-        {/* Technologies */}
-        <div className="flex flex-wrap gap-x-4 gap-y-2 mt-8">
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-3 pt-4">
           {experience.technologies?.map((tech, i) => (
-            <span key={i} className="text-[10px] uppercase tracking-[0.2em] font-bold text-black dark:text-white">
-              {tech}
+            <span 
+              key={i} 
+              className="text-[10px] font-bold border border-terminal-primary/30 px-2 py-1 text-terminal-primary hover:bg-terminal-primary hover:text-black transition-all"
+            >
+              #{tech.replace(/\s+/g, "_").toUpperCase()}
             </span>
           ))}
         </div>
@@ -82,36 +70,32 @@ function ExperienceItem({ experience, index }: { experience: ExperienceType; ind
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-24 px-4 sm:px-10 lg:px-20 bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-end mb-16 md:mb-24">
-          <motion.h2 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="text-large font-bold tracking-tighter"
-          >
-            History
-          </motion.h2>
-          <motion.p 
-             initial={{ opacity: 0 }}
-             whileInView={{ opacity: 1 }}
-             viewport={{ once: true }}
-             className="text-xs uppercase tracking-[0.3em] text-gray-400 hidden sm:block"
-          >
-            Work Log 2021 — 2025
-          </motion.p>
+    <section id="experience" className="py-24 px-4 sm:px-10 lg:px-20 bg-black text-terminal-primary">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Section Title */}
+        <div className="flex items-center gap-4 mb-20">
+          <span className="text-terminal-primary opacity-70">admin@akshat.dev:~$</span>
+          <h2 className="text-2xl font-bold uppercase tracking-[0.2em] border-b-2 border-terminal-primary">
+            tail -f work_history.log
+          </h2>
         </div>
 
-        <div className="border-t border-black dark:border-white">
-          {EXPERIENCES.map((experience, index) => (
-            <ExperienceItem 
-              key={experience.id} 
-              experience={experience} 
-              index={index} 
-            />
+        {/* Timeline Container */}
+        <div className="pl-4">
+          {EXPERIENCES.map((exp, index) => (
+            <LogEntry key={exp.id} experience={exp} index={index} />
           ))}
         </div>
+
+        {/* System Message */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-20 p-4 border border-dashed border-terminal-primary/20 text-center text-[10px] uppercase tracking-[0.5em] opacity-40"
+        >
+          *** END OF SYSTEM LOG ***
+        </motion.div>
       </div>
     </section>
   );

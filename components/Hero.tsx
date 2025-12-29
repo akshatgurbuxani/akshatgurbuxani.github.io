@@ -2,101 +2,130 @@
 
 import { motion } from "framer-motion";
 import { PERSONAL } from "@/data";
+import { useEffect, useState } from "react";
 
 // =============================================================================
-// Animation Variants
+// Helper Components
 // =============================================================================
 
-const revealVariants = {
-  hidden: { y: "100%" },
-  visible: { 
-    y: 0, 
-    transition: { 
-      duration: 1, 
-      ease: [0.16, 1, 0.3, 1] 
-    } 
-  },
-};
+function TypewriterLine({ text, delay = 0, onComplete }: { text: string; delay?: number; onComplete?: () => void }) {
+  return (
+    <motion.p
+      initial={{ width: 0 }}
+      animate={{ width: "100%" }}
+      transition={{ duration: text.length * 0.02, delay, ease: "linear" }}
+      onAnimationComplete={onComplete}
+      className="overflow-hidden whitespace-nowrap border-r-2 border-transparent"
+    >
+      <span className="text-terminal-primary opacity-70">admin@akshat.dev:~$ </span>
+      {text}
+    </motion.p>
+  );
+}
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+// =============================================================================
+// ASCII Art for Name
+// =============================================================================
+
+const ASCII_NAME = `
+   _   _  ______ _   _   ___ _____ 
+  / \\ / |/  ____| | | | / _ \\_   _|
+ / ^ \\| |  /    | |_| |/ /_\\ \\| |  
+/ / \\ \\ | |     |  _  |  _  || |  
+\\_/  \\_\\_\\______| | | |_| |_||_|  
+`;
 
 // =============================================================================
 // Hero Component
 // =============================================================================
 
 export default function Hero() {
+  const [bootPhase, setBootSequence] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setBootSequence(1), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <section className="min-h-screen flex flex-col justify-center px-4 sm:px-10 lg:px-20 py-20 bg-white dark:bg-black overflow-hidden select-none">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="w-full"
-      >
-        {/* Name - Big Block Letters */}
-        <div className="overflow-hidden mb-4">
-          <motion.h1 
-            variants={revealVariants}
-            className="text-huge font-bold leading-none tracking-tighter"
-          >
-            {PERSONAL.name.split(" ").map((word, i) => (
-              <span key={i} className="block">
-                {word}
-              </span>
-            ))}
-          </motion.h1>
+    <section className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-10 font-mono text-terminal-primary">
+      <div className="w-full max-w-4xl space-y-4">
+        {/* Terminal Header */}
+        <div className="border border-terminal-primary p-2 flex justify-between items-center opacity-50 text-[10px]">
+          <span>SYSTEM_VERSION: 1.0.4</span>
+          <span>LOCATION: {PERSONAL.location.toUpperCase().replace(", ", "_")}</span>
+          <span>STATUS: ONLINE</span>
         </div>
 
-        {/* Info Grid - Minimalist */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mt-10 md:mt-20 border-t border-black dark:border-white pt-6">
-          <div className="md:col-span-4">
+        {/* Boot Sequence */}
+        <div className="space-y-1 text-sm sm:text-base">
+          <TypewriterLine text="init_system --verbose" delay={0.5} onComplete={() => setBootSequence(2)} />
+          {bootPhase >= 2 && (
             <motion.p 
-              variants={revealVariants}
-              className="text-xl sm:text-2xl font-medium uppercase tracking-tight"
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              className="text-gray-500"
             >
-              {PERSONAL.title}
+              [ OK ] Loading kernel modules...<br />
+              [ OK ] Accessing neural core...<br />
+              [ OK ] Authenticating user: AKSHAT_GURBUXANI
             </motion.p>
-          </div>
-          
-          <div className="md:col-span-5 md:col-start-8">
-            <motion.p 
-              variants={revealVariants}
-              className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 font-serif italic leading-snug"
-            >
-              {PERSONAL.tagline}
-            </motion.p>
+          )}
+          {bootPhase >= 2 && (
+            <TypewriterLine text="display_profile --identity" delay={1.5} onComplete={() => setBootSequence(3)} />
+          )}
+        </div>
+
+        {/* ASCII Identity */}
+        {bootPhase >= 3 && (
+          <motion.pre
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-[6px] sm:text-[10px] md:text-xs leading-none font-bold py-6 text-terminal-primary"
+          >
+            {ASCII_NAME}
+          </motion.pre>
+        )}
+
+        {/* Main Info */}
+        {bootPhase >= 3 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="border-l-4 border-terminal-primary pl-6 py-4 space-y-4"
+          >
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-widest">
+              {PERSONAL.title.toUpperCase()}
+            </h1>
+            <p className="text-lg opacity-80 max-w-2xl italic">
+              &gt; {PERSONAL.tagline}
+            </p>
             
-            <motion.div 
-              variants={revealVariants}
-              className="mt-10"
-            >
+            <div className="flex flex-wrap gap-6 pt-6">
               <button 
                 onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-                className="group relative inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest"
+                className="hover:bg-terminal-primary hover:text-black px-4 py-2 border border-terminal-primary transition-colors uppercase font-bold text-sm"
               >
-                <span>Discover Projects</span>
-                <span className="block w-10 h-px bg-black dark:bg-white transition-all group-hover:w-20" />
+                [ VIEW_PROJECTS ]
               </button>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
+              <button 
+                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                className="hover:bg-terminal-primary hover:text-black px-4 py-2 border border-terminal-primary transition-colors uppercase font-bold text-sm"
+              >
+                [ CONTACT_SYS_ADMIN ]
+              </button>
+            </div>
+          </motion.div>
+        )}
 
-      {/* Background Decor - Minimal Line */}
-      <motion.div 
-        initial={{ height: 0 }}
-        animate={{ height: "100px" }}
-        transition={{ delay: 1, duration: 1.5 }}
-        className="absolute bottom-0 right-10 lg:right-20 w-px bg-black dark:bg-white opacity-20"
-      />
+        {/* Cursor */}
+        <motion.div 
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.8, repeat: Infinity, ease: "stepEnd" }}
+          className="w-3 h-6 bg-terminal-primary inline-block align-middle ml-2"
+        />
+      </div>
     </section>
   );
 }

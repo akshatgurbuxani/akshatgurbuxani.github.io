@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/contexts/ThemeContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 // =============================================================================
 // ThemeToggle Component
@@ -12,18 +12,25 @@ export default function ThemeToggle() {
 
   if (!mounted) return null;
 
+  const labels = {
+    matrix: "COLOR_MODE: MATRIX_GREEN",
+    amber: "COLOR_MODE: RETRO_AMBER",
+    white: "COLOR_MODE: CLASSIC_WHITE",
+  };
+
   return (
     <motion.button
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       onClick={toggleTheme}
-      className="fixed bottom-10 right-10 z-50 mix-blend-difference"
-      aria-label="Switch Mode"
+      className="fixed bottom-10 right-10 z-50 bg-black border border-terminal-primary p-4 hover:bg-terminal-primary hover:text-black transition-all group shadow-[0_0_20px_rgba(0,255,65,0.2)]"
+      aria-label="Switch Terminal Theme"
     >
-      <div className="relative group overflow-hidden border border-white/30 px-6 py-3 rounded-full hover:bg-white hover:text-black transition-all duration-500">
-        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white">
-          {theme === "light" ? "Dark Mode" : "Light Mode"}
+      <div className="flex items-center gap-4">
+        <span className="text-[10px] font-bold uppercase tracking-[0.3em]">
+          {labels[theme]}
         </span>
+        <div className="w-2 h-2 rounded-full bg-terminal-primary animate-pulse" />
       </div>
     </motion.button>
   );
