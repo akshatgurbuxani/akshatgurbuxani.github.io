@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
-
 export const metadata: Metadata = {
-  title: "AKSHAT_GURBUXANI | SYSTEM_PORTFOLIO",
-  description: "AI/ML Engineer Terminal | Accessing Data...",
+  title: "Akshat Gurbuxani | Portfolio",
+  description: "Creative portfolio website showcasing projects and skills",
 };
 
 export default function RootLayout({
@@ -19,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${jetbrainsMono.variable}`}>
-      <body className="font-mono">
+    <html lang="en" suppressHydrationWarning>
+      <body>
         <ThemeProvider>
           {children}
         </ThemeProvider>
@@ -28,3 +22,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+

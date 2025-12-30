@@ -2,63 +2,141 @@
 
 import { motion } from "framer-motion";
 import { EXPERIENCES } from "@/data";
-import type { Experience as ExperienceType } from "@/types";
+import type { Experience as ExperienceType, BulletPoint } from "@/types";
 
 // =============================================================================
-// Experience Item
+// Animation Variants
 // =============================================================================
 
-function LogEntry({ experience, index }: { experience: ExperienceType; index: number }) {
-  const timestamp = `202${5 - index}.04.12_08:30:4${index}`;
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+};
 
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
+};
+
+// =============================================================================
+// Section Header
+// =============================================================================
+
+function SectionHeader() {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.2 }}
-      className="group relative border-l-2 border-terminal-primary/20 pl-8 pb-16 last:pb-0"
+      transition={{ duration: 0.6 }}
+      className="text-center mb-16"
     >
-      {/* Node Dot */}
-      <div className="absolute -left-[9px] top-0 w-4 h-4 bg-black border-2 border-terminal-primary rounded-full group-hover:bg-terminal-primary transition-colors" />
+      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+        Experience
+      </h2>
+      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto" />
+    </motion.div>
+  );
+}
 
-      <div className="space-y-4">
-        {/* Log Header */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          <span className="text-gray-500 text-[10px] font-bold">[{timestamp}]</span>
-          <span className="text-terminal-primary font-bold uppercase tracking-widest text-lg">
-            {experience.role}
-          </span>
-          <span className="text-white opacity-50 font-serif italic">@ {experience.company}</span>
+// =============================================================================
+// Bullet Point with Highlights
+// =============================================================================
+
+function BulletPointText({ bullet }: { bullet: BulletPoint }) {
+  // Simple version - just render the text with a bullet point
+  return (
+    <li className="text-gray-600 dark:text-gray-400 leading-relaxed">
+      {bullet.text}
+    </li>
+  );
+}
+
+// =============================================================================
+// Technology Tags
+// =============================================================================
+
+function TechnologyTags({ technologies }: { technologies?: string[] }) {
+  if (!technologies || technologies.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2 mt-4">
+      {technologies.map((tech, index) => (
+        <span
+          key={index}
+          className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium"
+        >
+          {tech}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// =============================================================================
+// Experience Card
+// =============================================================================
+
+interface ExperienceCardProps {
+  experience: ExperienceType;
+  index: number;
+  isLast: boolean;
+}
+
+function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
+  return (
+    <motion.div
+      className="relative pl-8 md:pl-12"
+      variants={itemVariants}
+    >
+      {/* Timeline line */}
+      {!isLast && (
+        <div className="absolute left-0 md:left-4 top-8 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-pink-500" />
+      )}
+
+      {/* Timeline dot */}
+      <motion.div
+        className="absolute left-0 md:left-4 top-2 w-4 h-4 -ml-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: index * 0.1 }}
+      />
+
+      {/* Content card */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow ml-4">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {experience.role}
+            </h3>
+            <p className="text-lg text-purple-600 dark:text-purple-400 font-semibold">
+              {experience.company}
+            </p>
+          </div>
+          <div className="text-right mt-2 md:mt-0">
+            <p className="text-gray-600 dark:text-gray-400 font-medium">
+              {experience.startDate} – {experience.endDate}
+            </p>
+            <p className="text-gray-500 dark:text-gray-500 text-sm">
+              {experience.location}
+            </p>
+          </div>
         </div>
 
-        {/* Date/Loc */}
-        <div className="flex gap-6 text-[10px] uppercase font-bold tracking-widest opacity-60">
-          <span>PERIOD: {experience.startDate} — {experience.endDate}</span>
-          <span>LOC: {experience.location.toUpperCase()}</span>
-        </div>
-
-        {/* Description List */}
-        <div className="space-y-2 max-w-3xl">
-          {experience.description.map((bullet, i) => (
-            <div key={i} className="flex gap-3 text-gray-400 leading-relaxed text-sm">
-              <span className="text-terminal-primary opacity-50 mt-1">&gt;&gt;</span>
-              <p>{bullet.text}</p>
-            </div>
+        {/* Description bullets */}
+        <ul className="space-y-3 list-disc list-outside ml-5">
+          {experience.description.map((bullet, bulletIndex) => (
+            <BulletPointText key={bulletIndex} bullet={bullet} />
           ))}
-        </div>
+        </ul>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-3 pt-4">
-          {experience.technologies?.map((tech, i) => (
-            <span 
-              key={i} 
-              className="text-[10px] font-bold border border-terminal-primary/30 px-2 py-1 text-terminal-primary hover:bg-terminal-primary hover:text-black transition-all"
-            >
-              #{tech.replace(/\s+/g, "_").toUpperCase()}
-            </span>
-          ))}
-        </div>
+        {/* Technologies */}
+        <TechnologyTags technologies={experience.technologies} />
       </div>
     </motion.div>
   );
@@ -70,33 +148,31 @@ function LogEntry({ experience, index }: { experience: ExperienceType; index: nu
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-24 px-4 sm:px-10 lg:px-20 bg-black text-terminal-primary">
-      <div className="max-w-5xl mx-auto">
-        
-        {/* Section Title */}
-        <div className="flex items-center gap-4 mb-20">
-          <span className="text-terminal-primary opacity-70">admin@akshat.dev:~$</span>
-          <h2 className="text-2xl font-bold uppercase tracking-[0.2em] border-b-2 border-terminal-primary">
-            tail -f work_history.log
-          </h2>
-        </div>
+    <section
+      id="experience"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800"
+    >
+      <div className="max-w-4xl mx-auto">
+        <SectionHeader />
 
-        {/* Timeline Container */}
-        <div className="pl-4">
-          {EXPERIENCES.map((exp, index) => (
-            <LogEntry key={exp.id} experience={exp} index={index} />
-          ))}
-        </div>
-
-        {/* System Message */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-20 p-4 border border-dashed border-terminal-primary/20 text-center text-[10px] uppercase tracking-[0.5em] opacity-40"
+        <motion.div
+          className="space-y-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         >
-          *** END OF SYSTEM LOG ***
+          {EXPERIENCES.map((experience, index) => (
+            <ExperienceCard
+              key={experience.id}
+              experience={experience}
+              index={index}
+              isLast={index === EXPERIENCES.length - 1}
+            />
+          ))}
         </motion.div>
       </div>
     </section>
   );
 }
+

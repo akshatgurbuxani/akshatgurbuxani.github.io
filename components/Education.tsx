@@ -5,105 +5,172 @@ import { EDUCATION, PUBLICATIONS } from "@/data";
 import type { Education as EducationType, Publication } from "@/types";
 
 // =============================================================================
-// Education Item
+// Animation Variants
 // =============================================================================
 
-function RecordEntry({ education, index }: { education: EducationType; index: number }) {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
+// =============================================================================
+// Section Header
+// =============================================================================
+
+function SectionHeader() {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.2 }}
-      className="p-8 border border-terminal-primary/20 relative overflow-hidden group hover:border-terminal-primary transition-all"
+      transition={{ duration: 0.6 }}
+      className="text-center mb-16"
     >
-      {/* Background ID watermark */}
-      <span className="absolute -right-4 -bottom-4 text-6xl font-bold opacity-5 pointer-events-none select-none">
-        REC_{String(index + 1).padStart(3, "0")}
-      </span>
+      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+        Education
+      </h2>
+      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto" />
+    </motion.div>
+  );
+}
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 relative z-10">
-        {/* Record Meta */}
-        <div className="md:col-span-4 space-y-4">
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase text-gray-500">Record_ID</p>
-            <p className="text-white font-bold">{education.id.toUpperCase().replace("-", "_")}</p>
+// =============================================================================
+// Education Card
+// =============================================================================
+
+interface EducationCardProps {
+  education: EducationType;
+  index: number;
+}
+
+function EducationCard({ education, index }: EducationCardProps) {
+  const gradients = [
+    "from-purple-500 to-pink-500",
+    "from-blue-500 to-cyan-500",
+  ];
+
+  return (
+    <motion.div
+      className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+      variants={itemVariants}
+      whileHover={{ y: -5 }}
+    >
+      {/* Gradient header */}
+      <div className={`h-2 bg-gradient-to-r ${gradients[index % gradients.length]}`} />
+
+      <div className="p-6">
+        {/* Institution and dates */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {education.institution}
+            </h3>
+            <p className="text-lg text-purple-600 dark:text-purple-400 font-semibold">
+              {education.degree} in {education.field}
+            </p>
           </div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase text-gray-500">Validation_Period</p>
-            <p className="text-white">{education.startDate} - {education.endDate}</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase text-gray-500">Status</p>
-            <p className="text-green-500 font-bold">[ VERIFIED ]</p>
+          <div className="text-left md:text-right mt-2 md:mt-0">
+            <p className="text-gray-600 dark:text-gray-400 font-medium">
+              {education.startDate} – {education.endDate}
+            </p>
+            <p className="text-gray-500 dark:text-gray-500 text-sm">
+              {education.location}
+            </p>
           </div>
         </div>
 
-        {/* Record Content */}
-        <div className="md:col-span-8 border-l border-terminal-primary/10 pl-8">
-          <h3 className="text-2xl font-bold uppercase tracking-tighter mb-2">
-            {education.institution}
-          </h3>
-          <p className="text-lg font-serif italic text-terminal-primary/80 mb-6">
-            {education.degree} in {education.field}
-          </p>
-
-          {/* Details */}
-          <div className="space-y-6">
-            {education.activities && (
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase font-bold text-white opacity-40">Roles_and_Responsibilities</p>
-                {education.activities.map((act, i) => (
-                  <p key={i} className="text-sm text-gray-400">
-                    <span className="text-terminal-primary mr-2">/</span> {act}
-                  </p>
-                ))}
-              </div>
-            )}
-            {education.coursework && (
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase font-bold text-white opacity-40">Knowledge_Nodes_Acquired</p>
-                <div className="flex flex-wrap gap-x-6 gap-y-2">
-                  {education.coursework.map((course, i) => (
-                    <span key={i} className="text-[10px] font-bold text-terminal-primary/60 italic">
-                      #{course.replace(/\s+/g, "_")}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+        {/* Activities */}
+        {education.activities && education.activities.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
+              Activities
+            </h4>
+            <ul className="space-y-1">
+              {education.activities.map((activity, actIndex) => (
+                <li
+                  key={actIndex}
+                  className="text-gray-600 dark:text-gray-400 text-sm"
+                >
+                  • {activity}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        )}
+
+        {/* Coursework */}
+        {education.coursework && education.coursework.length > 0 && (
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
+              Related Coursework
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {education.coursework.map((course, courseIndex) => (
+                <span
+                  key={courseIndex}
+                  className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm"
+                >
+                  {course}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
 }
 
 // =============================================================================
-// Publication Item
+// Publication Card
 // =============================================================================
 
-function PublicationEntry({ pub }: { pub: Publication }) {
+function PublicationCard({ publication }: { publication: Publication }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      className="p-6 border-2 border-dashed border-terminal-primary/30 bg-terminal-primary/5 hover:border-terminal-primary transition-all"
+      className="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-2xl p-6 shadow-lg"
+      variants={itemVariants}
+      whileHover={{ scale: 1.02 }}
     >
-      <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-        <div className="flex-1 space-y-4">
-          <div className="flex items-center gap-3">
-            <span className="bg-terminal-primary text-black px-2 text-[10px] font-bold">PAPER_REF</span>
-            <span className="text-[10px] font-bold opacity-50 tracking-widest">{pub.date}</span>
-          </div>
-          <h3 className="text-xl font-bold uppercase tracking-widest">{pub.title}</h3>
-          <p className="text-sm text-gray-400 font-serif italic">&quot;{pub.description}&quot;</p>
+      <div className="flex items-start gap-4">
+        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+          <svg
+            className="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
         </div>
-        <div className="text-right space-y-2 min-w-[150px]">
-          <p className="text-[10px] font-bold uppercase text-white opacity-40">Submission_Node</p>
-          <p className="text-white font-bold">{pub.venue}</p>
-          <p className="text-green-500 font-bold text-xs">[{pub.status.toUpperCase()}]</p>
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+            {publication.title}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-2">
+            {publication.description}
+          </p>
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-medium">
+              {publication.status}
+            </span>
+            <span className="text-gray-500 dark:text-gray-500 text-sm">
+              {publication.date}
+            </span>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -116,42 +183,52 @@ function PublicationEntry({ pub }: { pub: Publication }) {
 
 export default function Education() {
   return (
-    <section id="education" className="py-24 px-4 sm:px-10 lg:px-20 bg-black text-terminal-primary">
-      <div className="max-w-5xl mx-auto">
-        
-        {/* Section Title */}
-        <div className="flex items-center gap-4 mb-20">
-          <span className="text-terminal-primary opacity-70">admin@akshat.dev:~$</span>
-          <h2 className="text-2xl font-bold uppercase tracking-[0.2em] border-b-2 border-terminal-primary">
-            query_database --type=education
-          </h2>
-        </div>
+    <section
+      id="education"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900"
+    >
+      <div className="max-w-4xl mx-auto">
+        <SectionHeader />
 
-        {/* Education Records */}
-        <div className="space-y-8">
-          {EDUCATION.map((edu, index) => (
-            <RecordEntry key={edu.id} education={edu} index={index} />
+        {/* Education Cards */}
+        <motion.div
+          className="grid gap-8 mb-12"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {EDUCATION.map((education, index) => (
+            <EducationCard key={education.id} education={education} index={index} />
           ))}
-        </div>
+        </motion.div>
 
         {/* Publications */}
         {PUBLICATIONS.length > 0 && (
-          <div className="mt-32 space-y-12">
-            <div className="flex items-center gap-6">
-              <h3 className="text-sm font-bold uppercase tracking-[0.4em] whitespace-nowrap opacity-50">
-                Peer_Reviewed_Nodes
-              </h3>
-              <div className="h-px bg-terminal-primary/10 flex-1" />
-            </div>
-            
-            <div className="space-y-6">
-              {PUBLICATIONS.map((pub) => (
-                <PublicationEntry key={pub.id} pub={pub} />
+          <>
+            <motion.h3
+              className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Publications
+            </motion.h3>
+            <motion.div
+              className="space-y-6"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              {PUBLICATIONS.map((publication) => (
+                <PublicationCard key={publication.id} publication={publication} />
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </>
         )}
       </div>
     </section>
   );
 }
+
