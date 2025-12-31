@@ -47,7 +47,6 @@ function SectionHeader() {
 // =============================================================================
 
 function BulletPointText({ bullet }: { bullet: BulletPoint }) {
-  // Simple version - just render the text with a bullet point
   return (
     <li className="text-gray-600 dark:text-gray-400 leading-relaxed">
       {bullet.text}
@@ -88,15 +87,15 @@ interface ExperienceCardProps {
 
 function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
   const isEven = index % 2 === 0;
-  const isLeft = isEven; // Even indices on left, odd on right
+  const isLeft = isEven;
 
   return (
     <motion.div
-      className={`relative flex items-center ${isLeft ? 'flex-row' : 'flex-row md:flex-row-reverse'} mb-8 md:mb-12`}
+      className={`relative flex items-start mb-12 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
       variants={itemVariants}
     >
       {/* Content card */}
-      <div className={`bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow w-full md:w-[45%] ml-8 md:ml-0 ${isLeft ? 'md:mr-auto md:mr-8' : 'md:ml-auto md:ml-8'}`}>
+      <div className={`bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow w-full md:w-[45%] ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
         {/* Header */}
         <div className="flex flex-col mb-4">
           <div>
@@ -165,17 +164,27 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
         <TechnologyTags technologies={experience.technologies} />
       </div>
 
-      {/* Timeline connector line (horizontal) - desktop only */}
-      <div className={`hidden md:block absolute left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r ${isLeft ? 'from-purple-500 to-transparent' : 'from-transparent to-purple-500'}`} />
+      {/* Timeline dot - centered on desktop, left on mobile */}
+      <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-12 h-12 z-10">
+        <motion.div
+          className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 border-2 border-white dark:border-gray-800 shadow-lg"
+          initial={{ scale: 0 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+        />
+      </div>
 
-      {/* Timeline dot - mobile on left, desktop centered */}
-      <motion.div
-        className={`absolute ${isLeft ? 'left-0 md:left-1/2' : 'left-0 md:left-1/2'} transform ${isLeft ? '-translate-x-2 md:-translate-x-1/2' : '-translate-x-2 md:-translate-x-1/2'} w-4 h-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg z-10`}
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
-      />
+      {/* Mobile timeline dot */}
+      <div className="md:hidden absolute left-0 top-6 transform -translate-x-1/2 z-10">
+        <motion.div
+          className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 border-2 border-white dark:border-gray-800 shadow-lg"
+          initial={{ scale: 0 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+        />
+      </div>
     </motion.div>
   );
 }
