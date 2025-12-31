@@ -2,7 +2,7 @@
 
 > **Disclaimer:** This code runs on vibes and prayers
 
-Personal portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a beautiful purple/pink gradient theme with animated aurora blobs and smooth, floaty animations.
+Personal portfolio website built with Next.js, TypeScript, and Tailwind CSS.
 
 ## Getting Started
 
@@ -27,19 +27,8 @@ npm run build
 npm start
 ```
 
-## Design & Style
-
-This portfolio features a **purple/pink gradient theme** with:
-
-- **Aurora Blobs**: Animated gradient blobs (purple, blue, pink, cyan) that float and respond to mouse movement
-- **Gradient Text**: Hero name and section headers use purple→pink→blue gradients
-- **Smooth Animations**: Floaty, soft animations with blur effects (1.2s duration)
-- **Interactive Background**: Grid pattern and spotlight that follow cursor movement
-- **Dark/Light Mode**: Seamless theme switching with smooth transitions
-
 ## Architecture
 
-This project follows a clean architecture with complete separation of data from presentation, featuring a gradient-based design with aurora effects and smooth animations.
 
 ```
 akshat.dev/
