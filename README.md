@@ -1,5 +1,7 @@
 # akshat.dev
 
+> **Disclaimer:** This code runs on vibes and prayers
+
 Personal portfolio website built with Next.js, TypeScript, and Tailwind CSS.
 
 ## Getting Started
