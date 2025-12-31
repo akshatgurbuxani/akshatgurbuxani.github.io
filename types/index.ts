@@ -45,6 +45,8 @@ export interface Experience {
   endDate: string;
   description: BulletPoint[];
   technologies?: string[];
+  githubUrl?: string;
+  websiteUrl?: string;
 }
 
 /**

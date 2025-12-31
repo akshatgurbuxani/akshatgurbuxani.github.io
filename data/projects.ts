@@ -20,7 +20,7 @@ export const PROJECTS: Project[] = [
     gradient: "from-yellow-500 to-orange-500",
     date: "April 2024 – June 2024",
     featured: true,
-    githubUrl: "https://github.com/akshatgurbuxani",
+    liveUrl: "https://www.kaggle.com/competitions/ai-mathematical-olympiad-prize",
   },
   {
     id: "ai-stock-trader",
@@ -37,7 +37,7 @@ export const PROJECTS: Project[] = [
     gradient: "from-green-500 to-emerald-500",
     date: "Jan. 2024 – May 2024",
     featured: true,
-    githubUrl: "https://github.com/akshatgurbuxani",
+    githubUrl: "https://github.com/akshatgurbuxani/IB-TWS-Simulated-Stocks-Trading",
   },
   {
     id: "itinerary-planner",
@@ -54,7 +54,8 @@ export const PROJECTS: Project[] = [
     gradient: "from-blue-500 to-purple-500",
     date: "Sep. 2024 – Nov. 2024",
     featured: true,
-    githubUrl: "https://github.com/akshatgurbuxani",
+    githubUrl: "https://github.com/akshatgurbuxani/itinerary-planner",
+    liveUrl: "https://weekendplanner.streamlit.app/",
   },
 ];
 

@@ -43,8 +43,8 @@ akshat.dev/
 ├── types/                  # TypeScript interfaces
 │   └── index.ts            # All type definitions
 ├── components/             # React components
-│   ├── Hero.tsx            # Hero section with interactive background
-│   ├── InteractiveBackground.tsx # High-performance particle flow
+│   ├── Hero.tsx            # Hero section with atmospheric background
+│   ├── AtmosphericBackground.tsx # Soft, blurry Aurora-style animations
 │   ├── About.tsx
 │   ├── Experience.tsx
 │   ├── Projects.tsx
@@ -63,9 +63,11 @@ akshat.dev/
 
 ## Advanced Components
 
-### Interactive Background
-The hero section features a high-performance Canvas-based particle flow.
-For detailed technical documentation, see [components/InteractiveBackground.README.md](components/InteractiveBackground.README.md).
+### Atmospheric Background
+The hero section features a high-end "Glass Aurora" background.
+- **Organic Motion**: Uses large, blurry blobs that drift naturally.
+- **Interactive**: Reacts to mouse movement and scrolling with a parallax feel.
+- **Visual Depth**: Includes a noise texture overlay for a premium "grainy" aesthetic.
 
 ## Customization
 

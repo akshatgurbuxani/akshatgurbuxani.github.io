@@ -3,7 +3,7 @@
 // =============================================================================
 
 export { default as Hero } from "./Hero";
-export { default as InteractiveBackground } from "./InteractiveBackground";
+export { default as AtmosphericBackground } from "./AtmosphericBackground";
 export { default as About } from "./About";
 export { default as Experience } from "./Experience";
 export { default as Education } from "./Education";

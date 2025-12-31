@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { PERSONAL } from "@/data";
-import InteractiveBackground from "./InteractiveBackground";
+import AtmosphericBackground from "./AtmosphericBackground";
 
 // =============================================================================
 // Animation Variants
@@ -12,13 +12,27 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 },
+    transition: { staggerChildren: 0.15, delayChildren: 0.3 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  hidden: { 
+    opacity: 0, 
+    y: 15,
+    filter: "blur(10px)",
+    scale: 0.98
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)",
+    scale: 1,
+    transition: { 
+      duration: 1.2, 
+      ease: [0.22, 1, 0.36, 1] // Custom quintic ease-out
+    } 
+  },
 };
 
 
@@ -66,6 +80,10 @@ function CTAButtons() {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToContact = () => {
+    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <motion.div
       className="flex flex-col sm:flex-row gap-4 justify-center items-center"
@@ -79,14 +97,14 @@ function CTAButtons() {
       >
         View My Work
       </motion.button>
-      <motion.a
-        href="#contact"
+      <motion.button
+        onClick={scrollToContact}
         className="px-8 py-4 border-2 border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 rounded-full font-semibold text-lg hover:bg-purple-600 hover:text-white dark:hover:bg-purple-400 dark:hover:text-gray-900 transition-colors"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         Get In Touch
-      </motion.a>
+      </motion.button>
     </motion.div>
   );
 }
@@ -96,11 +114,16 @@ function CTAButtons() {
 // =============================================================================
 
 export default function Hero() {
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const scale = useTransform(scrollY, [0, 300], [1, 0.95]);
+
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900 dark:to-gray-900">
-      <InteractiveBackground />
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[var(--background)] transition-colors duration-700">
+      <AtmosphericBackground />
 
       <motion.div
+        style={{ opacity, scale }}
         className="relative z-10 text-center px-4 sm:px-6 lg:px-8"
         variants={containerVariants}
         initial="hidden"

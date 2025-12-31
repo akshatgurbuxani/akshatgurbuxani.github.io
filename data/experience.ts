@@ -23,6 +23,8 @@ export const EXPERIENCES: Experience[] = [
       },
     ],
     technologies: ["LLM", "GNN", "XGBoost", "DSPy", "Multi-Agent Systems", "Blockchain"],
+    githubUrl: "https://github.com/semiotic-ai/graph-assistant",
+    websiteUrl: "https://www.semiotic.ai/",
   },
   {
     id: "boston-public-school",
@@ -42,6 +44,8 @@ export const EXPERIENCES: Experience[] = [
       },
     ],
     technologies: ["RAG", "FAISS", "LLM", "Vector Search", "Python"],
+    githubUrl: "https://github.com/akshatgurbuxani/BPS-policybot",
+    websiteUrl: "https://ragbps.streamlit.app/",
   },
   {
     id: "optum",

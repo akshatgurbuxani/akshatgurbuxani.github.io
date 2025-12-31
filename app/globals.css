@@ -3,13 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #fdfcfb;
   --foreground: #0a0a0a;
+  --spotlight-color: 100, 100, 100;
 }
 
 .dark {
-  --background: #0a0a0a;
+  --background: #020617;
   --foreground: #ededed;
+  --spotlight-color: 147, 51, 234;
 }
 
 * {
@@ -32,6 +34,9 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .bg-radial-vignette {
+    background: radial-gradient(circle, transparent 20%, var(--background) 100%);
   }
 }
 

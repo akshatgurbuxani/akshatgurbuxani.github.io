@@ -48,6 +48,7 @@ export const PUBLICATIONS: Publication[] = [
     date: "June 2024 – Aug. 2024",
     status: "Under review at ICLR 2025",
     venue: "ICLR 2025",
+    url: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=DDIjoEUAAAAJ&sortby=pubdate&citation_for_view=DDIjoEUAAAAJ:dshw04ExmUIC",
   },
 ];
 
