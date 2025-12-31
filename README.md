@@ -29,7 +29,7 @@ npm start
 
 ## Architecture
 
-This project follows a clean architecture with complete separation of data from presentation.
+This project follows a clean architecture with complete separation of data from presentation, featuring a brutalist design aesthetic with geometric shapes and snappy animations.
 
 ```
 akshat.dev/
@@ -43,8 +43,8 @@ akshat.dev/
 ├── types/                  # TypeScript interfaces
 │   └── index.ts            # All type definitions
 ├── components/             # React components
-│   ├── Hero.tsx            # Hero section with atmospheric background
-│   ├── AtmosphericBackground.tsx # Soft, blurry Aurora-style animations
+│   ├── Hero.tsx            # Hero section with brutalist styling
+│   ├── AtmosphericBackground.tsx # Geometric shapes with mouse tracking
 │   ├── About.tsx
 │   ├── Experience.tsx
 │   ├── Projects.tsx
@@ -58,16 +58,63 @@ akshat.dev/
 └── app/                    # Next.js app directory
     ├── layout.tsx
     ├── page.tsx
-    └── globals.css
+    └── globals.css         # Brutalist theme variables
+```
+
+### Architecture Diagram
+
+```mermaid
+graph TD
+    Page[app/page.tsx] --> Hero[Hero Component]
+    Page --> About[About Component]
+    Page --> Experience[Experience Component]
+    Page --> Projects[Projects Component]
+    Page --> Skills[Skills Component]
+    Page --> Education[Education Component]
+    Page --> Contact[Contact Component]
+    
+    Hero --> Background[AtmosphericBackground]
+    
+    subgraph AtmosphericBackground
+        Background --> MouseTracking[Mouse Tracking<br/>useMotionValue + useSpring]
+        Background --> GridPattern[Dot Grid Pattern<br/>Parallax Movement]
+        Background --> Shapes[Geometric Shapes<br/>Rect, Circle, Line]
+        Background --> Spotlight[Cursor Spotlight<br/>Teal Glow Effect]
+        MouseTracking --> Shapes
+    end
+    
+    subgraph Data Layer
+        DataFiles[data/*.ts] --> Components[All Components]
+        Types[types/index.ts] --> Components
+    end
+    
+    subgraph Theme System
+        ThemeContext[ThemeContext] --> ThemeToggle[ThemeToggle]
+        ThemeContext --> AllComponents[All Components]
+        Globals[globals.css<br/>CSS Variables] --> AllComponents
+    end
+    
+    subgraph Animations
+        FramerMotion[Framer Motion] --> ScrollAnimations[Scroll-triggered<br/>Entrance Animations]
+        FramerMotion --> MouseAnimations[Mouse-tracking<br/>Parallax Effects]
+        ScrollAnimations --> AllComponents
+        MouseAnimations --> Background
+    end
+    
+    style Background fill:#14b8a6,color:#fff
+    style MouseTracking fill:#0d9488,color:#fff
+    style ThemeContext fill:#2dd4bf,color:#000
 ```
 
 ## Advanced Components
 
 ### Atmospheric Background
-The hero section features a high-end "Glass Aurora" background.
-- **Organic Motion**: Uses large, blurry blobs that drift naturally.
-- **Interactive**: Reacts to mouse movement and scrolling with a parallax feel.
-- **Visual Depth**: Includes a noise texture overlay for a premium "grainy" aesthetic.
+The hero section features a brutalist geometric background with interactive mouse tracking.
+- **Geometric Shapes**: Rectangles, circles, and lines with subtle borders
+- **Mouse Tracking**: Parallax movement using Framer Motion's `useMotionValue` and `useSpring`
+- **Dot Grid Pattern**: Animated grid that responds to mouse movement
+- **Cursor Spotlight**: Subtle teal glow that follows the cursor
+- **Corner Accents**: Minimal geometric lines in corners for brutalist aesthetic
 
 ## Customization
 
