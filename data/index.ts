@@ -51,4 +51,3 @@ export type {
   SkillCategory,
   Project,
 } from "@/types";
-

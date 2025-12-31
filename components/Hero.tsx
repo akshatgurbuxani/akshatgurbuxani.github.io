@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { PERSONAL } from "@/data";
+import InteractiveBackground from "./InteractiveBackground";
 
 // =============================================================================
 // Animation Variants
@@ -20,44 +21,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 };
 
-const blobVariants = {
-  animate: (custom: { scale: number[]; x: number[]; y: number[]; duration: number }) => ({
-    scale: custom.scale,
-    x: custom.x,
-    y: custom.y,
-    transition: {
-      duration: custom.duration,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }),
-};
-
-// =============================================================================
-// Animated Background Blobs
-// =============================================================================
-
-function AnimatedBlobs() {
-  const blobs = [
-    { color: "bg-purple-300 dark:bg-purple-800", position: "top-20 left-10", custom: { scale: [1, 1.2, 1], x: [0, 50, 0], y: [0, 30, 0], duration: 8 } },
-    { color: "bg-pink-300 dark:bg-pink-800", position: "top-40 right-10", custom: { scale: [1, 1.3, 1], x: [0, -30, 0], y: [0, 50, 0], duration: 10 } },
-    { color: "bg-blue-300 dark:bg-blue-800", position: "bottom-20 left-1/2", custom: { scale: [1, 1.1, 1], x: [0, 20, 0], y: [0, -40, 0], duration: 12 } },
-  ];
-
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {blobs.map((blob, index) => (
-        <motion.div
-          key={index}
-          className={`absolute ${blob.position} w-72 h-72 ${blob.color} rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-70`}
-          variants={blobVariants}
-          animate="animate"
-          custom={blob.custom}
-        />
-      ))}
-    </div>
-  );
-}
 
 // =============================================================================
 // Scroll Indicator
@@ -135,7 +98,7 @@ function CTAButtons() {
 export default function Hero() {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900 dark:to-gray-900">
-      <AnimatedBlobs />
+      <InteractiveBackground />
 
       <motion.div
         className="relative z-10 text-center px-4 sm:px-6 lg:px-8"

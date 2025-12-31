@@ -41,7 +41,8 @@ akshat.dev/
 ├── types/                  # TypeScript interfaces
 │   └── index.ts            # All type definitions
 ├── components/             # React components
-│   ├── Hero.tsx
+│   ├── Hero.tsx            # Hero section with interactive background
+│   ├── InteractiveBackground.tsx # High-performance particle flow
 │   ├── About.tsx
 │   ├── Experience.tsx
 │   ├── Projects.tsx
@@ -58,6 +59,12 @@ akshat.dev/
     └── globals.css
 ```
 
+## Advanced Components
+
+### Interactive Background
+The hero section features a high-performance Canvas-based particle flow.
+For detailed technical documentation, see [components/InteractiveBackground.README.md](components/InteractiveBackground.README.md).
+
 ## Customization
 
 ### Updating Content
@@ -69,44 +76,6 @@ All content is in the `data/` directory. Edit these files to update your portfol
 - **`data/education.ts`** - Education and publications
 - **`data/skills.ts`** - Skills grouped by category
 - **`data/projects.ts`** - Featured projects
-
-### Example: Adding a New Job
-
-```typescript
-// data/experience.ts
-export const EXPERIENCES: Experience[] = [
-  {
-    id: "new-job",
-    company: "Company Name",
-    role: "Your Role",
-    location: "City, State",
-    startDate: "Month Year",
-    endDate: "Present",
-    description: [
-      { text: "Achievement or responsibility" },
-    ],
-    technologies: ["Tech1", "Tech2"],
-  },
-  // ... existing experiences
-];
-```
-
-### Adding New Skills
-
-```typescript
-// data/skills.ts
-export const SKILL_CATEGORIES: SkillCategory[] = [
-  {
-    id: "new-category",
-    name: "Category Name",
-    gradient: "from-blue-500 to-purple-500",
-    skills: [
-      { name: "Skill Name", proficiency: 85 },
-    ],
-  },
-  // ... existing categories
-];
-```
 
 ## Features
 
