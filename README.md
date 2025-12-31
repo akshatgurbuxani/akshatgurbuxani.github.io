@@ -46,7 +46,7 @@ akshat.dev/
 │   ├── AtmosphericBackground.tsx # Aurora blobs with mouse tracking
 │   ├── About.tsx           # About section with gradient cards
 │   ├── Experience.tsx      # Timeline experience section
-│   ├── Projects.tsx        # Project grid with gradient headers
+│   ├── Projects.tsx        # Stacked accordion project layout
 │   ├── Skills.tsx          # Skills with gradient progress bars
 │   ├── Education.tsx       # Education cards with gradient accents
 │   ├── Contact.tsx          # Contact form with gradient buttons
@@ -64,65 +64,52 @@ akshat.dev/
 
 ```mermaid
 graph TD
-    Page[app/page.tsx<br/>Main Page] --> ThemeToggle[ThemeToggle<br/>Fixed Position]
-    Page --> Hero[Hero Component<br/>Gradient Text]
-    Page --> About[About Component]
-    Page --> Experience[Experience Component<br/>Timeline]
-    Page --> Projects[Projects Component<br/>Grid Layout]
-    Page --> Skills[Skills Component<br/>Progress Bars]
-    Page --> Education[Education Component]
-    Page --> Contact[Contact Component<br/>Form + Social]
+    Page[app/page.tsx] --> Hero[Hero]
+    Page --> About[About]
+    Page --> Experience[Experience]
+    Page --> Projects[Projects]
+    Page --> Skills[Skills]
+    Page --> Education[Education]
+    Page --> Contact[Contact]
+    Page --> ThemeToggle[ThemeToggle]
     
-    Hero --> Background[AtmosphericBackground<br/>Aurora Blobs]
+    Hero --> AtmosphericBackground[AtmosphericBackground]
     
-    subgraph AtmosphericBackground
-        Background --> MouseTracking[Mouse Tracking<br/>useMotionValue + useSpring]
-        Background --> AuroraBlobs[Aurora Blobs<br/>Purple/Blue/Pink/Cyan<br/>Blur + Mix Blend]
-        Background --> GridPattern[Dot Grid Pattern<br/>Parallax Movement]
-        Background --> Spotlight[Cursor Spotlight<br/>Purple Glow Effect]
-        Background --> NoiseTexture[Noise Texture<br/>Subtle Grain]
-        Background --> Vignette[Radial Vignette<br/>Edge Fade]
-        MouseTracking --> AuroraBlobs
-        MouseTracking --> GridPattern
-        MouseTracking --> Spotlight
+    Projects --> ProjectStack[ProjectStack]
+    ProjectStack --> ProjectItem[ProjectItem]
+    ProjectItem --> CollapsedView[CollapsedView]
+    ProjectItem --> ExpandedView[ExpandedView]
+    
+    subgraph Data[Data Layer]
+        PersonalData[data/personal.ts]
+        ExperienceData[data/experience.ts]
+        ProjectsData[data/projects.ts]
+        SkillsData[data/skills.ts]
+        EducationData[data/education.ts]
+        Types[types/index.ts]
     end
     
-    subgraph Data Layer
-        PersonalData[data/personal.ts] --> Hero
-        PersonalData --> About
-        PersonalData --> Contact
-        ExperienceData[data/experience.ts] --> Experience
-        ProjectsData[data/projects.ts] --> Projects
-        SkillsData[data/skills.ts] --> Skills
-        EducationData[data/education.ts] --> Education
-        Types[types/index.ts] --> AllComponents[All Components]
+    subgraph Theme[Theme System]
+        ThemeContext[ThemeContext]
+        Globals[globals.css]
     end
     
-    subgraph Theme System
-        ThemeContext[ThemeContext<br/>Dark/Light State] --> ThemeToggle
-        ThemeContext --> AllComponents
-        Globals[globals.css<br/>CSS Variables<br/>--background<br/>--foreground<br/>--spotlight-color] --> AllComponents
-        TailwindConfig[tailwind.config.ts<br/>Color System] --> AllComponents
-    end
+    PersonalData --> Hero
+    PersonalData --> About
+    PersonalData --> Contact
+    ExperienceData --> Experience
+    ProjectsData --> Projects
+    SkillsData --> Skills
+    EducationData --> Education
+    Types --> AllComponents[All Components]
     
-    subgraph Animations
-        FramerMotion[Framer Motion] --> ScrollAnimations[Scroll-triggered<br/>Fade + Slide Up<br/>Stagger Children]
-        FramerMotion --> MouseAnimations[Mouse-tracking<br/>Parallax Effects<br/>Smooth Spring]
-        FramerMotion --> HoverAnimations[Hover Effects<br/>Scale + Shadow]
-        ScrollAnimations --> AllComponents
-        MouseAnimations --> Background
-        HoverAnimations --> Cards[Card Components]
-    end
+    ThemeContext --> ThemeToggle
+    ThemeContext --> AllComponents
+    Globals --> AllComponents
     
-    subgraph Color System
-        LightMode[Light Mode<br/>Cream Background<br/>Purple/Pink Gradients] --> Globals
-        DarkMode[Dark Mode<br/>Dark Background<br/>Lighter Purple/Pink] --> Globals
-    end
-    
-    style Background fill:#9333ea,color:#fff
-    style AuroraBlobs fill:#a855f7,color:#fff
+    style Projects fill:#9333ea,color:#fff
+    style ProjectStack fill:#a855f7,color:#fff
     style ThemeContext fill:#ec4899,color:#fff
-    style Hero fill:#8b5cf6,color:#fff
 ```
 
 ## Advanced Components
@@ -177,7 +164,7 @@ All content is in the `data/` directory. Edit these files to update your portfol
 - 🎬 **Smooth Animations** - Floaty, soft animations with Framer Motion
 - 📊 **Timeline Experience** - Visual timeline with gradient dots
 - 📈 **Skill Progress Bars** - Animated progress bars with gradient fills
-- 🎴 **Project Cards** - Hover effects with gradient headers
+- 🎴 **Stacked Project Accordion** - Scroll-triggered accordion with click-to-expand
 - 📝 **Contact Form** - Email form with gradient submit button
 - 🔒 **Type-Safe** - Full TypeScript coverage
 

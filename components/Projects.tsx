@@ -5,6 +5,24 @@ import { PROJECTS } from "@/data";
 import type { Project } from "@/types";
 
 // =============================================================================
+// Constants & Utilities
+// =============================================================================
+
+/**
+ * Format project number with leading zero (01, 02, etc.)
+ */
+const formatProjectNumber = (index: number): string => {
+  return String(index + 1).padStart(2, '0');
+};
+
+/**
+ * Get project anchor ID
+ */
+const getProjectId = (index: number): string => {
+  return `project-${formatProjectNumber(index)}`;
+};
+
+// =============================================================================
 // Animation Variants
 // =============================================================================
 
@@ -12,35 +30,24 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.08 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
-// =============================================================================
-// Section Header
-// =============================================================================
+const slideFromLeft = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
+};
 
-function SectionHeader() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-16"
-    >
-      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-        Featured Projects
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto" />
-    </motion.div>
-  );
-}
+const slideFromRight = {
+  hidden: { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
+};
 
 // =============================================================================
 // Icons
@@ -72,96 +79,106 @@ function GitHubIcon() {
 }
 
 // =============================================================================
-// Project Card
+// Project Navigation Header (shows previous projects as clickable links)
 // =============================================================================
 
-interface ProjectCardProps {
-  project: Project;
+interface ProjectNavProps {
+  currentIndex: number;
+  projects: Project[];
+  currentProject: Project;
 }
 
-function ProjectCard({ project }: ProjectCardProps) {
+function ProjectNav({ currentIndex, projects, currentProject }: ProjectNavProps) {
+  const previousProjects = projects.slice(0, currentIndex);
+
+  const handleNavClick = (index: number) => {
+    const element = document.getElementById(getProjectId(index));
+    if (element) {
+      // For sticky elements, scroll to the element's position in document flow
+      const rect = element.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const elementTop = rect.top + scrollTop;
+      
+      window.scrollTo({
+        top: elementTop,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <motion.div
-      className="group"
-      variants={itemVariants}
-      whileHover={{ y: -10 }}
+      className="sticky top-0 z-30 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
-      <div className="h-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-        {/* Gradient header */}
-        <div className={`h-48 bg-gradient-to-br ${project.gradient} relative overflow-hidden`}>
-          {/* Overlay on hover */}
-          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-
-          {/* Date badge */}
-          <div className="absolute top-4 left-4">
-            <span className="px-3 py-1 bg-white/90 dark:bg-gray-900/90 rounded-full text-sm font-medium text-gray-800 dark:text-gray-200">
-              {project.date}
-            </span>
-          </div>
-
-          {/* Links */}
-          <div className="absolute bottom-4 right-4 flex gap-2">
-            {project.liveUrl && (
-              <motion.a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-white dark:bg-gray-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-gray-800 dark:text-gray-200"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                aria-label="Live demo"
+      <div className="px-6 py-4">
+        <div className="space-y-0">
+          {/* Previous projects - collapsed */}
+          {previousProjects.map((project, index) => (
+            <div key={project.id}>
+              <button
+                onClick={() => handleNavClick(index)}
+                className="w-full flex items-center justify-between py-4 px-0 text-left hover:opacity-80 transition-opacity group"
               >
-                <ExternalLinkIcon />
-              </motion.a>
-            )}
-            {project.githubUrl && (
-              <motion.a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-white dark:bg-gray-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-gray-800 dark:text-gray-200"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                aria-label="GitHub"
-              >
-                <GitHubIcon />
-              </motion.a>
-            )}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-6">
-          <h3 className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-            {project.title}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {project.description}
-          </p>
-
-          {/* Highlights */}
-          <ul className="space-y-1 mb-4">
-            {project.highlights.slice(0, 3).map((highlight, index) => (
-              <li
-                key={index}
-                className="text-sm text-gray-600 dark:text-gray-400 flex items-start"
-              >
-                <span className="text-purple-600 dark:text-purple-400 mr-2">•</span>
-                {highlight}
-              </li>
-            ))}
-          </ul>
-
-          {/* Technologies */}
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.map((tech, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm"
-              >
-                {tech}
-              </span>
-            ))}
+                <span className="text-gray-400 dark:text-gray-500 font-bold text-sm">
+                  ({formatProjectNumber(index)})
+                </span>
+                <span className="text-gray-600 dark:text-gray-300 text-sm flex-1 text-right">
+                  {project.title}
+                </span>
+              </button>
+              <div className="border-t border-gray-200 dark:border-gray-700" />
+            </div>
+          ))}
+          
+          {/* Current project - expanded */}
+          <div className="py-4">
+            <div className="flex items-start justify-between gap-6">
+              <div className="flex items-start gap-4 flex-1">
+                <span className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                  {formatProjectNumber(currentIndex)}
+                </span>
+                <div className="flex-1">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                    {currentProject.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {currentProject.date}
+                  </p>
+                </div>
+              </div>
+              {/* Action buttons */}
+              <div className="flex gap-2">
+                {currentProject.liveUrl && (
+                  <motion.a
+                    href={currentProject.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Live demo"
+                  >
+                    <ExternalLinkIcon />
+                  </motion.a>
+                )}
+                {currentProject.githubUrl && (
+                  <motion.a
+                    href={currentProject.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="GitHub"
+                  >
+                    <GitHubIcon />
+                  </motion.a>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -170,30 +187,128 @@ function ProjectCard({ project }: ProjectCardProps) {
 }
 
 // =============================================================================
-// Projects Component
+// Project Card Component (Full-screen card for the deck)
+// =============================================================================
+
+interface ProjectCardProps {
+  project: Project;
+  index: number;
+}
+
+export function ProjectCard({ project, index }: ProjectCardProps) {
+  const projectNumber = formatProjectNumber(index);
+
+  return (
+    <motion.div
+      className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-800"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+    >
+      {/* Navigation showing previous projects and current project */}
+      <ProjectNav currentIndex={index} projects={PROJECTS} currentProject={project} />
+
+      {/* Project Content */}
+      <div className="flex-1 flex flex-col lg:flex-row">
+        {/* Gradient Visual */}
+        <motion.div
+          className={`lg:w-1/2 h-64 lg:h-auto bg-gradient-to-br ${project.gradient} relative overflow-hidden flex items-center justify-center`}
+          variants={slideFromLeft}
+        >
+          <div className="absolute inset-0 bg-black/10" />
+          <motion.span
+            className="text-[12rem] sm:text-[16rem] font-bold text-white/20 select-none"
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            {projectNumber}
+          </motion.span>
+        </motion.div>
+
+        {/* Content */}
+        <motion.div
+          className="lg:w-1/2 p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-white dark:bg-gray-900"
+          variants={slideFromRight}
+        >
+          <motion.p
+            className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed"
+            variants={itemVariants}
+          >
+            {project.description}
+          </motion.p>
+
+          {/* Highlights */}
+          <motion.div className="mb-8" variants={itemVariants}>
+            <h4 className="text-sm font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-4">
+              Key Highlights
+            </h4>
+            <ul className="space-y-3">
+              {project.highlights.map((highlight, idx) => (
+                <motion.li
+                  key={idx}
+                  className="text-gray-600 dark:text-gray-400 flex items-start"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: 0.1 + idx * 0.05 }}
+                >
+                  <span className="text-purple-600 dark:text-purple-400 mr-3 mt-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  {highlight}
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Technologies */}
+          <motion.div variants={itemVariants}>
+            <h4 className="text-sm font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-4">
+              Technologies
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {project.technologies.map((tech, idx) => (
+                <motion.span
+                  key={idx}
+                  className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.25, delay: 0.15 + idx * 0.03 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {tech}
+                </motion.span>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+// =============================================================================
+// Export Projects Data for Main Page
+// =============================================================================
+
+export { PROJECTS };
+
+// =============================================================================
+// Legacy Export (for backwards compatibility)
 // =============================================================================
 
 export default function Projects() {
   return (
-    <section
-      id="projects"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800"
-    >
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader />
-
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {PROJECTS.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </motion.div>
-      </div>
-    </section>
+    <>
+      {PROJECTS.map((project, index) => (
+        <ProjectCard key={project.id} project={project} index={index} />
+      ))}
+    </>
   );
 }

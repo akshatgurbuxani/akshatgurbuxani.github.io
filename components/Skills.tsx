@@ -12,13 +12,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.08 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, x: -15 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
 // =============================================================================
@@ -28,10 +28,10 @@ const itemVariants = {
 function SectionHeader() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
       className="text-center mb-16"
     >
       <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
@@ -69,7 +69,7 @@ function SkillBar({ skill, gradient, index }: SkillBarProps) {
           initial={{ width: 0 }}
           whileInView={{ width: `${skill.proficiency}%` }}
           viewport={{ once: true }}
-          transition={{ duration: 1, delay: index * 0.05 }}
+          transition={{ duration: 0.5, delay: index * 0.02 }}
         />
       </div>
     </div>
@@ -123,10 +123,10 @@ function TopSkillsBadges() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
       className="mt-12"
     >
       <h3 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
@@ -141,7 +141,7 @@ function TopSkillsBadges() {
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
+            transition={{ duration: 0.25, delay: index * 0.03 }}
           >
             {skill.name}
           </motion.div>
@@ -157,10 +157,7 @@ function TopSkillsBadges() {
 
 export default function Skills() {
   return (
-    <section
-      id="skills"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800"
-    >
+    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto">
         <SectionHeader />
 
@@ -184,6 +181,6 @@ export default function Skills() {
         {/* Top Skills Badges */}
         <TopSkillsBadges />
       </div>
-    </section>
+    </div>
   );
 }

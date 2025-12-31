@@ -12,13 +12,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
 // =============================================================================
@@ -28,10 +28,10 @@ const itemVariants = {
 function SectionHeader() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
       className="text-center mb-16"
     >
       <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
@@ -203,10 +203,7 @@ function PublicationCard({ publication }: { publication: Publication }) {
 
 export default function Education() {
   return (
-    <section
-      id="education"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900"
-    >
+    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-4xl mx-auto">
         <SectionHeader />
 
@@ -228,9 +225,10 @@ export default function Education() {
           <>
             <motion.h3
               className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
+              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
             >
               Publications
             </motion.h3>
@@ -248,6 +246,6 @@ export default function Education() {
           </>
         )}
       </div>
-    </section>
+    </div>
   );
 }

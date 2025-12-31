@@ -22,6 +22,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-y: scroll;
 }
 
 body {
@@ -37,5 +38,16 @@ body {
   }
   .bg-radial-vignette {
     background: radial-gradient(circle, transparent 20%, var(--background) 100%);
+  }
+}
+
+/* Deck of Cards UI - Card stacking effect */
+@layer components {
+  .card-shadow {
+    box-shadow: 0 -20px 60px -15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark .card-shadow {
+    box-shadow: 0 -20px 60px -15px rgba(0, 0, 0, 0.5);
   }
 }

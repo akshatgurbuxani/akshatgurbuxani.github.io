@@ -12,13 +12,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
 // =============================================================================
@@ -28,10 +28,10 @@ const itemVariants = {
 function SectionHeader() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
       className="text-center mb-16"
     >
       <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
@@ -87,34 +87,23 @@ interface ExperienceCardProps {
 }
 
 function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
+  const isEven = index % 2 === 0;
+  const isLeft = isEven; // Even indices on left, odd on right
+
   return (
     <motion.div
-      className="relative pl-8 md:pl-12"
+      className={`relative flex items-center ${isLeft ? 'flex-row' : 'flex-row md:flex-row-reverse'} mb-8 md:mb-12`}
       variants={itemVariants}
     >
-      {/* Timeline line */}
-      {!isLast && (
-        <div className="absolute left-0 md:left-4 top-8 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-pink-500" />
-      )}
-
-      {/* Timeline dot */}
-      <motion.div
-        className="absolute left-0 md:left-4 top-2 w-4 h-4 -ml-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg"
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: index * 0.1 }}
-      />
-
       {/* Content card */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow ml-4">
+      <div className={`bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow w-full md:w-[45%] ml-8 md:ml-0 ${isLeft ? 'md:mr-auto md:mr-8' : 'md:ml-auto md:ml-8'}`}>
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+        <div className="flex flex-col mb-4">
           <div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
               {experience.role}
             </h3>
-            <div className="flex items-center gap-3 mt-1">
+            <div className="flex items-center gap-3 mt-1 flex-wrap">
               <p className="text-lg text-purple-600 dark:text-purple-400 font-semibold">
                 {experience.company}
               </p>
@@ -155,7 +144,7 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
               )}
             </div>
           </div>
-          <div className="text-right mt-2 md:mt-0">
+          <div className={`mt-2 ${isLeft ? 'text-left' : 'text-right'}`}>
             <p className="text-gray-600 dark:text-gray-400 font-medium">
               {experience.startDate} – {experience.endDate}
             </p>
@@ -175,6 +164,18 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
         {/* Technologies */}
         <TechnologyTags technologies={experience.technologies} />
       </div>
+
+      {/* Timeline connector line (horizontal) - desktop only */}
+      <div className={`hidden md:block absolute left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r ${isLeft ? 'from-purple-500 to-transparent' : 'from-transparent to-purple-500'}`} />
+
+      {/* Timeline dot - mobile on left, desktop centered */}
+      <motion.div
+        className={`absolute ${isLeft ? 'left-0 md:left-1/2' : 'left-0 md:left-1/2'} transform ${isLeft ? '-translate-x-2 md:-translate-x-1/2' : '-translate-x-2 md:-translate-x-1/2'} w-4 h-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg z-10`}
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.3, delay: index * 0.05 }}
+      />
     </motion.div>
   );
 }
@@ -185,30 +186,33 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
 
 export default function Experience() {
   return (
-    <section
-      id="experience"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800"
-    >
-      <div className="max-w-4xl mx-auto">
+    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
+      <div className="max-w-6xl mx-auto w-full">
         <SectionHeader />
 
-        <motion.div
-          className="space-y-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {EXPERIENCES.map((experience, index) => (
-            <ExperienceCard
-              key={experience.id}
-              experience={experience}
-              index={index}
-              isLast={index === EXPERIENCES.length - 1}
-            />
-          ))}
-        </motion.div>
+        {/* Timeline container with centered vertical line */}
+        <div className="relative pb-16">
+          {/* Vertical timeline line - desktop centered, mobile on left */}
+          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500" />
+
+          <motion.div
+            className="relative"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {EXPERIENCES.map((experience, index) => (
+              <ExperienceCard
+                key={experience.id}
+                experience={experience}
+                index={index}
+                isLast={index === EXPERIENCES.length - 1}
+              />
+            ))}
+          </motion.div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

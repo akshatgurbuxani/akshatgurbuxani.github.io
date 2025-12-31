@@ -114,3 +114,25 @@ export interface Publication {
   venue?: string;
   url?: string;
 }
+
+// =============================================================================
+// Deck of Cards UI Types
+// =============================================================================
+
+/**
+ * Props for Card wrapper component
+ */
+export interface CardProps {
+  children: React.ReactNode;
+  index: number;
+  className?: string;
+  id?: string;
+}
+
+/**
+ * Props for ProjectCard component
+ */
+export interface ProjectCardProps {
+  project: Project;
+  index: number;
+}

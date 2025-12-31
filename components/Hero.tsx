@@ -12,25 +12,23 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
   },
 };
 
 const itemVariants = {
   hidden: { 
     opacity: 0, 
-    y: 15,
-    filter: "blur(10px)",
-    scale: 0.98
+    y: 12,
+    filter: "blur(8px)",
   },
   visible: { 
     opacity: 1, 
     y: 0, 
     filter: "blur(0px)",
-    scale: 1,
     transition: { 
-      duration: 1.2, 
-      ease: [0.22, 1, 0.36, 1] // Custom quintic ease-out
+      duration: 0.5, 
+      ease: [0.25, 0.1, 0.25, 1]
     } 
   },
 };
@@ -46,7 +44,7 @@ function ScrollIndicator() {
       className="mt-16"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, delay: 1 }}
+      transition={{ duration: 0.4, delay: 0.5 }}
     >
       <motion.div
         animate={{ y: [0, 10, 0] }}
@@ -119,7 +117,7 @@ export default function Hero() {
   const scale = useTransform(scrollY, [0, 300], [1, 0.95]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[var(--background)] transition-colors duration-700">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[var(--background)] transition-colors duration-700">
       <AtmosphericBackground />
 
       <motion.div
@@ -153,6 +151,6 @@ export default function Hero() {
         <CTAButtons />
         <ScrollIndicator />
       </motion.div>
-    </section>
+    </div>
   );
 }

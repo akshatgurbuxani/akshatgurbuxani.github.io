@@ -1,21 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useCallback } from "react";
 import { PERSONAL, SOCIAL_LINKS } from "@/data";
 import type { SocialLink } from "@/types";
-
-// =============================================================================
-// Types
-// =============================================================================
-
-interface FormData {
-  name: string;
-  email: string;
-  message: string;
-}
-
-type FormStatus = "idle" | "sending" | "success" | "error";
 
 // =============================================================================
 // Animation Variants
@@ -25,13 +12,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.08 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
 // =============================================================================
@@ -40,17 +27,17 @@ const itemVariants = {
 
 const Icons = {
   email: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={2}
+        strokeWidth={1.5}
         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
       />
     </svg>
   ),
   github: (
-    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -59,353 +46,167 @@ const Icons = {
     </svg>
   ),
   linkedin: (
-    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
     </svg>
   ),
   location: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   ),
   phone: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={2}
+        strokeWidth={1.5}
         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
       />
     </svg>
   ),
-  mail: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-    </svg>
-  ),
-  externalLink: (
-    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+  twitter: (
+    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   ),
 };
 
-const SOCIAL_ICON_CONFIG: Record<SocialLink["icon"], { icon: JSX.Element; gradient: string }> = {
-  email: { icon: Icons.email, gradient: "from-red-400 to-pink-500" },
-  github: { icon: Icons.github, gradient: "from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100" },
-  linkedin: { icon: Icons.linkedin, gradient: "from-blue-500 to-blue-600" },
-  twitter: { icon: Icons.github, gradient: "from-cyan-400 to-blue-500" }, // fallback
-  phone: { icon: Icons.phone, gradient: "from-green-400 to-emerald-500" },
+const SOCIAL_ICON_CONFIG: Record<SocialLink["icon"], { icon: JSX.Element; gradient: string; label: string }> = {
+  email: { icon: Icons.email, gradient: "from-red-400 to-pink-500", label: "Email" },
+  github: { icon: Icons.github, gradient: "from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100", label: "GitHub" },
+  linkedin: { icon: Icons.linkedin, gradient: "from-blue-500 to-blue-600", label: "LinkedIn" },
+  twitter: { icon: Icons.twitter, gradient: "from-gray-800 to-black dark:from-gray-200 dark:to-white", label: "X / Twitter" },
+  phone: { icon: Icons.phone, gradient: "from-green-400 to-emerald-500", label: "Phone" },
 };
-
-// =============================================================================
-// Helper Functions
-// =============================================================================
-
-function buildMailtoLink(formData: FormData): string {
-  const subject = encodeURIComponent(`Portfolio Contact: ${formData.name}`);
-  const body = encodeURIComponent(
-    `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-  );
-  return `mailto:${PERSONAL.email}?subject=${subject}&body=${body}`;
-}
-
-// =============================================================================
-// Section Header
-// =============================================================================
-
-function SectionHeader() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-16"
-    >
-      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-        Get In Touch
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto mb-6" />
-      <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        I&apos;m always open to discussing new projects, creative ideas, or opportunities
-        to be part of your visions. Feel free to reach out!
-      </p>
-    </motion.div>
-  );
-}
-
-// =============================================================================
-// Contact Info
-// =============================================================================
-
-function ContactInfo() {
-  return (
-    <motion.div
-      className="text-center mb-12"
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-    >
-      <motion.div 
-        className="flex flex-col md:flex-row justify-center gap-8 mb-8" 
-        variants={itemVariants}
-      >
-        <div className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400">
-          {Icons.location}
-          <span>{PERSONAL.location}</span>
-        </div>
-        <a 
-          href={`mailto:${PERSONAL.email}`} 
-          className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-        >
-          {Icons.mail}
-          <span>{PERSONAL.email}</span>
-        </a>
-        <a 
-          href={`tel:${PERSONAL.phone.replace(/\D/g, "")}`}
-          className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-        >
-          {Icons.phone}
-          <span>{PERSONAL.phone}</span>
-        </a>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// =============================================================================
-// Contact Form
-// =============================================================================
-
-const INITIAL_FORM_DATA: FormData = { name: "", email: "", message: "" };
-
-function ContactForm() {
-  const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
-  const [status, setStatus] = useState<FormStatus>("idle");
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    },
-    []
-  );
-
-  const handleSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-
-      // Validate
-      if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-        return;
-      }
-
-      setStatus("sending");
-
-      // Create and click a temporary anchor element to trigger email client
-      // This is the most reliable cross-browser method
-      const mailtoLink = buildMailtoLink(formData);
-      const link = document.createElement("a");
-      link.href = mailtoLink;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Show success and reset
-      setStatus("success");
-      setFormData(INITIAL_FORM_DATA);
-
-      // Reset status after delay
-      setTimeout(() => setStatus("idle"), 4000);
-    },
-    [formData]
-  );
-
-  const isDisabled = status === "sending";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-12"
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name Field */}
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            autoComplete="name"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 outline-none transition-shadow"
-            placeholder="Your name"
-          />
-        </div>
-
-        {/* Email Field */}
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            autoComplete="email"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 outline-none transition-shadow"
-            placeholder="your.email@example.com"
-          />
-        </div>
-
-        {/* Message Field */}
-        <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Message
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            rows={5}
-            value={formData.message}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 outline-none transition-shadow resize-none"
-            placeholder="Your message..."
-          />
-        </div>
-
-        {/* Status Messages */}
-        {status === "success" && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 rounded-lg text-green-700 dark:text-green-400 text-sm"
-          >
-            ✓ Your email client should open shortly. If it doesn&apos;t, email me directly at{" "}
-            <a 
-              href={`mailto:${PERSONAL.email}`} 
-              className="underline font-medium hover:text-green-800 dark:hover:text-green-300"
-            >
-              {PERSONAL.email}
-            </a>
-          </motion.div>
-        )}
-
-        {/* Submit Button */}
-        <motion.button
-          type="submit"
-          disabled={isDisabled}
-          className="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          whileHover={{ scale: isDisabled ? 1 : 1.02 }}
-          whileTap={{ scale: isDisabled ? 1 : 0.98 }}
-        >
-          <span>Send Message</span>
-          {Icons.externalLink}
-        </motion.button>
-
-        <p className="text-xs text-center text-gray-500 dark:text-gray-500">
-          This will open your default email client with the message pre-filled.
-        </p>
-      </form>
-    </motion.div>
-  );
-}
-
-// =============================================================================
-// Social Links
-// =============================================================================
-
-function SocialLinks() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.4 }}
-      className="flex flex-wrap justify-center gap-6"
-    >
-      {SOCIAL_LINKS.map((social) => {
-        const config = SOCIAL_ICON_CONFIG[social.icon];
-        return (
-          <motion.a
-            key={social.name}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`p-4 bg-gradient-to-br ${config.gradient} rounded-full text-white shadow-lg`}
-            whileHover={{ scale: 1.1, y: -5 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label={social.name}
-          >
-            {config.icon}
-          </motion.a>
-        );
-      })}
-    </motion.div>
-  );
-}
-
-// =============================================================================
-// Footer
-// =============================================================================
-
-function Footer() {
-  const currentYear = new Date().getFullYear();
-
-  return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.6 }}
-      className="text-center mt-12 text-gray-600 dark:text-gray-400"
-    >
-      <p>© {currentYear} {PERSONAL.name}. All rights reserved.</p>
-    </motion.footer>
-  );
-}
 
 // =============================================================================
 // Contact Component (Main Export)
 // =============================================================================
 
 export default function Contact() {
+  const currentYear = new Date().getFullYear();
+
+  // Build contact methods array for equal display
+  const contactMethods = [
+    {
+      icon: Icons.email,
+      label: "Email",
+      value: PERSONAL.email,
+      href: `mailto:${PERSONAL.email}`,
+      gradient: "from-red-400 to-pink-500",
+    },
+    {
+      icon: Icons.phone,
+      label: "Phone",
+      value: PERSONAL.phone,
+      href: `tel:${PERSONAL.phone.replace(/\D/g, "")}`,
+      gradient: "from-green-400 to-emerald-500",
+    },
+    {
+      icon: Icons.location,
+      label: "Location",
+      value: PERSONAL.location,
+      href: null,
+      gradient: "from-blue-400 to-indigo-500",
+    },
+  ];
+
   return (
-    <section
-      id="contact"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900 dark:to-gray-900"
-    >
-      <div className="max-w-4xl mx-auto">
-        <SectionHeader />
-        <ContactInfo />
-        <ContactForm />
-        <SocialLinks />
-        <Footer />
-      </div>
-    </section>
+    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900 dark:to-gray-900">
+      <motion.div
+        className="max-w-4xl mx-auto text-center"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        {/* Header */}
+        <motion.div variants={itemVariants} className="mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+            Let&apos;s Connect
+          </h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto mb-6" />
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+            Open to new projects, ideas, and opportunities. Reach out through any channel!
+          </p>
+        </motion.div>
+
+        {/* Contact Methods - Equal Grid */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12"
+          variants={containerVariants}
+        >
+          {contactMethods.map((method, index) => {
+            const content = (
+              <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all group h-full flex flex-col items-center justify-center">
+                <div className={`w-14 h-14 mb-4 rounded-full bg-gradient-to-br ${method.gradient} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform`}>
+                  <div className="w-6 h-6">{method.icon}</div>
+                </div>
+                <p className="text-xs uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
+                  {method.label}
+                </p>
+                <p className="text-gray-800 dark:text-gray-200 font-medium text-sm">
+                  {method.value}
+                </p>
+              </div>
+            );
+
+            return (
+              <motion.div key={method.label} variants={itemVariants}>
+                {method.href ? (
+                  <a href={method.href} className="block h-full">
+                    {content}
+                  </a>
+                ) : (
+                  content
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        {/* Social Links */}
+        <motion.div variants={itemVariants}>
+          <p className="text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-4">
+            Also find me on
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {SOCIAL_LINKS.map((social) => {
+              const config = SOCIAL_ICON_CONFIG[social.icon];
+              return (
+                <motion.a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    {config.icon}
+                  </div>
+                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    {config.label}
+                  </span>
+                </motion.a>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Footer */}
+        <motion.footer
+          className="mt-16 pt-6 border-t border-gray-200/50 dark:border-gray-700/50"
+          variants={itemVariants}
+        >
+          <p className="text-gray-400 dark:text-gray-500 text-sm">
+            © {currentYear} {PERSONAL.name}
+          </p>
+        </motion.footer>
+      </motion.div>
+    </div>
   );
 }
