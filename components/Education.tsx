@@ -206,7 +206,6 @@ export default function Education() {
     <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-4xl mx-auto">
         <SectionHeader />
-
         {/* Education Cards */}
         <motion.div
           className="grid gap-8 mb-12"

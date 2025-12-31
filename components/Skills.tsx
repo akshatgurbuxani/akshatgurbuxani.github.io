@@ -160,7 +160,6 @@ export default function Skills() {
     <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto">
         <SectionHeader />
-
         {/* Skill Categories Grid */}
         <motion.div
           className="grid md:grid-cols-2 gap-8"
