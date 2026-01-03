@@ -34,9 +34,9 @@ export const PERSONAL: PersonalInfo = {
   email: "imaksht@gmail.com",
   phone: "+1 (857) 919-6015",
   bio: [
-    "Two years of industry experience as an ML Engineer with deep expertise in Large Language Models, distributed systems, and production-grade machine learning pipelines.",
-    "I specialize in building end-to-end AI systems—from training SOTA models to deploying them at scale. My work spans multi-modal learning, multi-agent systems, and real-time data processing.",
-    "Currently seeking Data Science and ML Engineer roles where I can leverage my experience to build impactful AI products.",
+    "I work on turning research ideas into working AI systems. Over the last two years, that's meant training large language models, wiring them into distributed systems, and making sure they hold up in production.",
+    "Most of my work lives end-to-end: taking an idea from research or theory, turning it into a model, and deploying it at scale. Along the way, I've worked on multimodal learning, multi-agent systems, and real-time data pipelines.",
+    "I care about the gap between what papers promise and what systems actually do, and I spend most of my time trying to close it.",
   ],
   socialLinks: SOCIAL_LINKS,
 };

@@ -57,24 +57,21 @@ function SkillBar({ skill, gradient, index }: SkillBarProps) {
 }
 
 // =============================================================================
-// Skill Category Card
+// Skill Category Section (for single card layout)
 // =============================================================================
 
-interface SkillCategoryCardProps {
+interface SkillCategorySectionProps {
   category: SkillCategory;
-  index: number;
+  globalIndex: number;
 }
 
-function SkillCategoryCard({ category, index }: SkillCategoryCardProps) {
+function SkillCategorySection({ category, globalIndex }: SkillCategorySectionProps) {
   return (
-    <motion.div
-      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
-      variants={itemVariants}
-    >
+    <div className="mb-8 last:mb-0">
       {/* Category header with gradient accent */}
-      <div className="flex items-center mb-6">
-        <div className={`w-1 h-8 bg-gradient-to-b ${category.gradient} rounded-full mr-3`} />
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+      <div className="flex items-center mb-4">
+        <div className={`w-1 h-6 bg-gradient-to-b ${category.gradient} rounded-full mr-3`} />
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
           {category.name}
         </h3>
       </div>
@@ -86,11 +83,11 @@ function SkillCategoryCard({ category, index }: SkillCategoryCardProps) {
             key={skill.name}
             skill={skill}
             gradient={category.gradient}
-            index={index * 10 + skillIndex}
+            index={globalIndex * 10 + skillIndex}
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -140,20 +137,24 @@ export default function Skills() {
     <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto">
         <SectionHeader title="Skills & Technologies" />
-        {/* Skill Categories Grid */}
+        {/* Single Card with All Categories */}
         <motion.div
-          className="grid md:grid-cols-2 gap-8"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
           {SKILL_CATEGORIES.map((category, index) => (
-            <SkillCategoryCard
+            <motion.div
               key={category.id}
-              category={category}
-              index={index}
-            />
+              variants={itemVariants}
+            >
+              <SkillCategorySection
+                category={category}
+                globalIndex={index}
+              />
+            </motion.div>
           ))}
         </motion.div>
 
