@@ -24,7 +24,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: main         # deploy to root of username repo
           folder: out          # folder containing static build
