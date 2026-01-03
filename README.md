@@ -1,4 +1,4 @@
-# akshat.dev
+# portfolio
 
 > **Disclaimer:** This code runs on vibes and prayers
 
