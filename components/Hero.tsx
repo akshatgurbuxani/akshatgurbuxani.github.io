@@ -111,7 +111,22 @@ export default function Hero() {
           className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-gray-700 dark:text-gray-300"
           variants={itemVariants}
         >
-          {PERSONAL.title}
+          {PERSONAL.title.split(" @ ").map((part, index) => {
+            if (index === 0) {
+              return <span key={index}>{part} @ </span>;
+            }
+            return (
+              <a
+                key={index}
+                href="https://www.semiotic.ai/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-300 dark:hover:to-pink-300 transition-all duration-300 underline decoration-2 underline-offset-4 decoration-purple-600/50 dark:decoration-purple-400/50 hover:decoration-purple-600 dark:hover:decoration-purple-400"
+              >
+                {part}
+              </a>
+            );
+          })}
         </motion.h2>
 
         <motion.p
