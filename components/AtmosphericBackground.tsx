@@ -164,9 +164,6 @@ export default function AtmosphericBackground() {
         mounted={mounted}
       />
 
-      {/* Noise Texture */}
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] mix-blend-overlay z-[3]" />
-
       {/* Vignette */}
       <div className="absolute inset-0 bg-radial-vignette opacity-50 dark:opacity-70 z-[3]" />
     </div>
