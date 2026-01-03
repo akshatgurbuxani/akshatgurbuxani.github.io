@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { EDUCATION, PUBLICATIONS } from "@/data";
 import type { Education as EducationType, Publication } from "@/types";
+import { SectionHeader, ExternalLinkIcon, BookIcon } from "@/components/ui";
 
 // =============================================================================
 // Animation Variants
@@ -16,31 +17,32 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 15 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
+// Create directional variants based on index
+const getItemVariants = (index: number) => {
+  const directions = [
+    { x: -50, y: 0 }, // left
+    { x: 50, y: 0 },  // right
+    { x: 0, y: -30 }, // up
+    { x: 0, y: 30 },  // down
+  ];
+  const direction = directions[index % 4];
+  
+  return {
+    hidden: { 
+      opacity: 0, 
+      x: direction.x,
+      y: direction.y,
+      rotate: index % 2 === 0 ? -2 : 2
+    },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      y: 0,
+      rotate: 0,
+      transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] } 
+    },
+  };
 };
-
-// =============================================================================
-// Section Header
-// =============================================================================
-
-function SectionHeader() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-      className="text-center mb-16"
-    >
-      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-        Education
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto" />
-    </motion.div>
-  );
-}
 
 // =============================================================================
 // Education Card
@@ -60,8 +62,11 @@ function EducationCard({ education, index }: EducationCardProps) {
   return (
     <motion.div
       className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-      variants={itemVariants}
-      whileHover={{ y: -5 }}
+      variants={getItemVariants(index)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      whileHover={{ y: -5, rotate: 1 }}
     >
       {/* Gradient header */}
       <div className={`h-2 bg-gradient-to-r ${gradients[index % gradients.length]}`} />
@@ -133,28 +138,19 @@ function EducationCard({ education, index }: EducationCardProps) {
 // Publication Card
 // =============================================================================
 
-function PublicationCard({ publication }: { publication: Publication }) {
+function PublicationCard({ publication, index }: { publication: Publication; index: number }) {
   return (
     <motion.div
       className="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-2xl p-6 shadow-lg"
-      variants={itemVariants}
-      whileHover={{ scale: 1.02 }}
+      variants={getItemVariants(index)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      whileHover={{ scale: 1.02, rotate: 1 }}
     >
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-          <svg
-            className="w-6 h-6 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-            />
-          </svg>
+          <BookIcon className="w-6 h-6 text-white" />
         </div>
         <div className="flex-1">
           <div className="flex items-start gap-2 mb-1">
@@ -169,14 +165,7 @@ function PublicationCard({ publication }: { publication: Publication }) {
                 className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex-shrink-0 mt-1"
                 aria-label="View publication"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
+                <ExternalLinkIcon className="w-5 h-5" />
               </a>
             )}
           </div>
@@ -205,19 +194,13 @@ export default function Education() {
   return (
     <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-4xl mx-auto">
-        <SectionHeader />
+        <SectionHeader title="Education" />
         {/* Education Cards */}
-        <motion.div
-          className="grid gap-8 mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <div className="grid gap-8 mb-12">
           {EDUCATION.map((education, index) => (
             <EducationCard key={education.id} education={education} index={index} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Publications */}
         {PUBLICATIONS.length > 0 && (
@@ -231,17 +214,11 @@ export default function Education() {
             >
               Publications
             </motion.h3>
-            <motion.div
-              className="space-y-6"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-            >
-              {PUBLICATIONS.map((publication) => (
-                <PublicationCard key={publication.id} publication={publication} />
+            <div className="space-y-6">
+              {PUBLICATIONS.map((publication, pubIndex) => (
+                <PublicationCard key={publication.id} publication={publication} index={pubIndex} />
               ))}
-            </motion.div>
+            </div>
           </>
         )}
       </div>

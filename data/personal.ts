@@ -29,7 +29,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const PERSONAL: PersonalInfo = {
   name: "Akshat Gurbuxani",
   title: "AI/ML Engineer",
-  tagline: "Building intelligent systems that solve real-world problems",
+  tagline: "Building intelligent systems that transform complex challenges into scalable AI solutions",
   location: "San Francisco, CA",
   email: "imaksht@gmail.com",
   phone: "+1 (857) 919-6015",
@@ -49,7 +49,6 @@ export const NAV_LINKS = [
   { name: "About", href: "#about" },
   { name: "Experience", href: "#experience" },
   { name: "Projects", href: "#projects" },
-  { name: "Skills", href: "#skills" },
   { name: "Education", href: "#education" },
   { name: "Contact", href: "#contact" },
 ] as const;

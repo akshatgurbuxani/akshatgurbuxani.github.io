@@ -10,7 +10,6 @@ import {
   Education,
   Projects,
   Contact,
-  ThemeToggle,
 } from "@/components";
 
 // =============================================================================
@@ -20,9 +19,8 @@ import {
 export default function Home() {
   return (
     <main className="relative w-full">
-      {/* Navigation & Theme Toggle */}
+      {/* Navigation */}
       <Navbar />
-      <ThemeToggle />
 
       {/* Hero Section */}
       <section id="hero">

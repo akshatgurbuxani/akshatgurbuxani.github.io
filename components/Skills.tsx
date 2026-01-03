@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { SKILL_CATEGORIES, getTopSkills } from "@/data";
 import type { SkillCategory, Skill } from "@/types";
+import { SectionHeader } from "@/components/ui";
 
 // =============================================================================
 // Animation Variants
@@ -20,27 +21,6 @@ const itemVariants = {
   hidden: { opacity: 0, x: -15 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
-
-// =============================================================================
-// Section Header
-// =============================================================================
-
-function SectionHeader() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-      className="text-center mb-16"
-    >
-      <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-        Skills & Technologies
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto" />
-    </motion.div>
-  );
-}
 
 // =============================================================================
 // Skill Bar
@@ -159,7 +139,7 @@ export default function Skills() {
   return (
     <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto">
-        <SectionHeader />
+        <SectionHeader title="Skills & Technologies" />
         {/* Skill Categories Grid */}
         <motion.div
           className="grid md:grid-cols-2 gap-8"

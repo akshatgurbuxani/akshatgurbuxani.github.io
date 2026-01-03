@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
-import { useEffect } from "react";
+import { motion, useSpring, useMotionValue, useTransform, MotionValue } from "framer-motion";
+import { useEffect, useState } from "react";
+import FloatingShapes from "./FloatingShapes";
 
 // =============================================================================
 // Configuration
@@ -15,6 +16,73 @@ const BLOBS = [
 ];
 
 // =============================================================================
+// Floating Particles Component (Always Rendered)
+// =============================================================================
+
+interface FloatingParticlesProps {
+  smoothMouseX: MotionValue<number>;
+  smoothMouseY: MotionValue<number>;
+  mounted: boolean;
+}
+
+function FloatingParticles({ 
+  smoothMouseX, 
+  smoothMouseY,
+  mounted 
+}: FloatingParticlesProps) {
+  // Create transforms for all particles upfront (always the same number)
+  const particleTransforms = Array.from({ length: 20 }).map(() => ({
+    translateX: useTransform(smoothMouseX, [-0.5, 0.5], [-30, 30]),
+    translateY: useTransform(smoothMouseY, [-0.5, 0.5], [-30, 30]),
+  }));
+
+  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    }
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <div className="absolute inset-0 z-[2]">
+      {particleTransforms.map((transform, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-purple-400/30 dark:bg-purple-300/20 rounded-full"
+          initial={{
+            x: Math.random() * dimensions.width,
+            y: Math.random() * dimensions.height,
+          }}
+          animate={{
+            x: [
+              Math.random() * dimensions.width,
+              Math.random() * dimensions.width,
+              Math.random() * dimensions.width,
+            ],
+            y: [
+              Math.random() * dimensions.height,
+              Math.random() * dimensions.height,
+              Math.random() * dimensions.height,
+            ],
+          }}
+          transition={{
+            duration: 20 + Math.random() * 10,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          style={transform}
+        />
+      ))}
+    </div>
+  );
+}
+
+// =============================================================================
 // Component
 // =============================================================================
 
@@ -23,11 +91,17 @@ export default function AtmosphericBackground() {
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { damping: 50, stiffness: 200 });
   const smoothMouseY = useSpring(mouseY, { damping: 50, stiffness: 200 });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set((e.clientX / window.innerWidth) - 0.5);
-      mouseY.set((e.clientY / window.innerHeight) - 0.5);
+      const x = (e.clientX / window.innerWidth) - 0.5;
+      const y = (e.clientY / window.innerHeight) - 0.5;
+      mouseX.set(x);
+      mouseY.set(y);
+      setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -35,18 +109,23 @@ export default function AtmosphericBackground() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[var(--background)]">
-      {/* Interactive Grid */}
+      {/* 3D Floating Shapes */}
+      <div className="absolute inset-0 z-10 opacity-60">
+        <FloatingShapes mousePosition={mousePosition} />
+      </div>
+
+      {/* Interactive Grid with Enhanced Parallax */}
       <motion.div
         className="absolute inset-0 opacity-[0.08] dark:opacity-[0.12] text-slate-600 dark:text-slate-400"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
           backgroundSize: "48px 48px",
-          translateX: useTransform(smoothMouseX, [-0.5, 0.5], [-15, 15]),
-          translateY: useTransform(smoothMouseY, [-0.5, 0.5], [-15, 15]),
+          translateX: useTransform(smoothMouseX, [-0.5, 0.5], [-25, 25]),
+          translateY: useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]),
         }}
       />
 
-      {/* Aurora Blobs */}
+      {/* Aurora Blobs with Enhanced Mouse Interaction */}
       <div className="relative w-full h-full">
         {BLOBS.map((blob, index) => (
           <motion.div
@@ -59,27 +138,34 @@ export default function AtmosphericBackground() {
             }}
             transition={{ duration: blob.duration, repeat: Infinity, ease: "easeInOut" }}
             style={{
-              translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -25, index * 25]),
-              translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -25, index * 25]),
+              translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -40, index * 40]),
+              translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -40, index * 40]),
             }}
           />
         ))}
       </div>
 
-      {/* Interactive Spotlight */}
+      {/* Enhanced Interactive Spotlight */}
       <motion.div
         className="absolute inset-0 z-[1]"
         style={{
           background: useTransform(
             [smoothMouseX, smoothMouseY],
             ([x, y]) =>
-              `radial-gradient(650px circle at ${(x as number + 0.5) * 100}% ${(y as number + 0.5) * 100}%, rgba(var(--spotlight-color), 0.12), transparent 70%)`
+              `radial-gradient(800px circle at ${(x as number + 0.5) * 100}% ${(y as number + 0.5) * 100}%, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.1), transparent 70%)`
           ),
         }}
       />
 
+      {/* Floating Particles Effect */}
+      <FloatingParticles 
+        smoothMouseX={smoothMouseX}
+        smoothMouseY={smoothMouseY}
+        mounted={mounted}
+      />
+
       {/* Noise Texture */}
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] mix-blend-overlay z-[2]" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] mix-blend-overlay z-[3]" />
 
       {/* Vignette */}
       <div className="absolute inset-0 bg-radial-vignette opacity-50 dark:opacity-70 z-[3]" />
