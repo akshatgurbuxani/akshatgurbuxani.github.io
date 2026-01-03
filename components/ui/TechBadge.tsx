@@ -30,7 +30,7 @@ export default function TechBadge({
   delay = 0,
   className = "",
 }: TechBadgeProps) {
-  const baseClasses = `${sizeClasses[size]} bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full font-medium`;
+  const baseClasses = `${sizeClasses[size]} bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 rounded-full font-medium inline-flex items-center justify-center whitespace-nowrap`;
 
   if (animated) {
     return (

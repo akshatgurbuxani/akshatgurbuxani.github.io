@@ -98,6 +98,7 @@ export interface Project {
   gradient: string;
   githubUrl?: string;
   liveUrl?: string;
+  certificateUrl?: string;
   date: string;
   featured?: boolean;
 }

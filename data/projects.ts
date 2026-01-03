@@ -20,7 +20,7 @@ export const PROJECTS: Project[] = [
     gradient: "from-yellow-500 to-orange-500",
     date: "April 2024 – June 2024",
     featured: true,
-    liveUrl: "https://www.kaggle.com/competitions/ai-mathematical-olympiad-prize",
+    certificateUrl: "https://www.kaggle.com/certification/competitions/akshatgurbuxani/ai-mathematical-olympiad-prize",
   },
   {
     id: "ai-stock-trader",

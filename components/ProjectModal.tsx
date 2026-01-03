@@ -119,6 +119,17 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                       View on GitHub
                     </a>
                   )}
+                  {project.certificateUrl && (
+                    <a
+                      href={project.certificateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg hover:from-amber-400 hover:to-orange-400 transition-all font-medium shadow-lg"
+                    >
+                      <ExternalLinkIcon className="w-5 h-5" />
+                      View Certificate
+                    </a>
+                  )}
                   {project.liveUrl && (
                     <a
                       href={project.liveUrl}
