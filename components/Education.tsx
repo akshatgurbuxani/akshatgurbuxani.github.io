@@ -71,7 +71,7 @@ function EducationCard({ education, index }: EducationCardProps) {
       {/* Gradient header */}
       <div className={`h-2 bg-gradient-to-r ${gradients[index % gradients.length]}`} />
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {/* Institution and dates */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
           <div>
@@ -192,7 +192,7 @@ function PublicationCard({ publication, index }: { publication: Publication; ind
 
 export default function Education() {
   return (
-    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+    <div className="w-full py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-4xl mx-auto">
         <SectionHeader title="Education" />
         {/* Education Cards */}

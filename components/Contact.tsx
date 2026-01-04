@@ -61,7 +61,7 @@ export default function Contact() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="w-full py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center">
+    <div className="w-full py-16 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center">
       <motion.div
         className="max-w-5xl mx-auto text-center"
         variants={containerVariants}
@@ -70,8 +70,8 @@ export default function Contact() {
         viewport={{ once: true }}
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="mb-20">
-          <h2 className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+        <motion.div variants={itemVariants} className="mb-12 sm:mb-16 md:mb-20">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
             Reach Out
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-pink-600 mx-auto mb-8" />
@@ -81,7 +81,7 @@ export default function Contact() {
         </motion.div>
 
         {/* Contact Grid with Glassmorphism */}
-        <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20" variants={containerVariants}>
+        <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16 md:mb-20" variants={containerVariants}>
           {SOCIAL_LINKS.map((social, index) => {
             const config = SOCIAL_ICON_CONFIG[social.name];
             if (!config) return null;
@@ -107,7 +107,7 @@ export default function Contact() {
                 <div className="relative z-10 flex flex-col items-center">
                   {/* Icon Container with Enhanced Gradient */}
                   <motion.div 
-                    className={`w-24 h-24 mb-6 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center ${config.iconColor || "text-white"} shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-300`}
+                    className={`w-16 h-16 sm:w-20 sm:h-24 mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center ${config.iconColor || "text-white"} shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-300`}
                     whileHover={{ 
                       scale: 1.15, 
                       rotate: [0, -5, 5, -5, 0],

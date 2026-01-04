@@ -134,12 +134,12 @@ function TopSkillsBadges() {
 
 export default function Skills() {
   return (
-    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
+    <div className="w-full py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto">
         <SectionHeader title="Skills & Technologies" />
         {/* Single Card with All Categories */}
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

@@ -91,7 +91,7 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
       viewport={{ once: true }}
     >
       {/* Content card */}
-      <div className={`bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all w-full md:w-[45%] ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
+      <div className={`bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all w-full md:w-[45%] ml-8 sm:ml-10 md:ml-0 ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
         {/* Header */}
         <div className="flex flex-col mb-4">
           <div>
@@ -159,7 +159,7 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
       </div>
 
       {/* Mobile timeline dot */}
-      <div className="md:hidden absolute left-0 top-6 transform -translate-x-1/2 z-10">
+      <div className="md:hidden absolute left-0 top-6 z-10">
         <motion.div
           className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 border-2 border-white dark:border-gray-800 shadow-lg"
           initial={{ scale: 0 }}
@@ -178,13 +178,13 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
 
 export default function Experience() {
   return (
-    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
+    <div className="w-full py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto w-full">
         <SectionHeader title="Experience" />
         {/* Timeline container with centered vertical line */}
         <div className="relative pb-16">
           {/* Vertical timeline line - desktop centered, mobile on left */}
-          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500" />
+          <div className="absolute left-4 sm:left-5 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500" />
 
           <div className="relative">
             {EXPERIENCES.map((experience, index) => (

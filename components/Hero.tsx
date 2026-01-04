@@ -97,7 +97,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-6 tracking-tight text-gray-900 dark:text-white"
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold mb-6 tracking-tight text-gray-900 dark:text-white"
           variants={itemVariants}
         >
           {PERSONAL.name.split(" ").map((part, i) => (
@@ -108,7 +108,7 @@ export default function Hero() {
         </motion.h1>
 
         <motion.h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-gray-700 dark:text-gray-300"
+          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 text-gray-700 dark:text-gray-300"
           variants={itemVariants}
         >
           {PERSONAL.title.split(" @ ").map((part, index) => {
@@ -130,7 +130,7 @@ export default function Hero() {
         </motion.h2>
 
         <motion.p
-          className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed px-4"
           variants={itemVariants}
         >
           {PERSONAL.tagline}

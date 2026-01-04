@@ -21,10 +21,10 @@ export default function SectionHeader({ title, description, className = "" }: Se
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-      className={`text-center mb-16 ${className}`}
+      className={`text-center mb-8 sm:mb-12 md:mb-16 ${className}`}
     >
       <h2
-        className={`text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r ${GRADIENTS.primary.both} bg-clip-text text-transparent`}
+        className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r ${GRADIENTS.primary.both} bg-clip-text text-transparent`}
       >
         {title}
       </h2>

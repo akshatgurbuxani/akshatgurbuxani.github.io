@@ -34,7 +34,7 @@ const slideFromRight = {
 function BioCard() {
   return (
     <motion.div
-      className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow h-full"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow h-full"
       variants={slideFromRight}
       initial="hidden"
       whileInView="visible"
@@ -97,7 +97,7 @@ function SkillsCard() {
 
   return (
     <motion.div
-      className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow h-full"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow h-full"
       variants={slideFromLeft}
       initial="hidden"
       whileInView="visible"
@@ -124,12 +124,12 @@ function SkillsCard() {
 
 export default function About() {
   return (
-    <div className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+    <div className="w-full py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <SectionHeader title="About Me" />
         
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
           {/* Left: Skills Card */}
           <SkillsCard />
           
