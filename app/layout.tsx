@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import GlobalPointerTrail from "@/components/GlobalPointerTrail";
 
 export const metadata: Metadata = {
   title: "Akshat Gurbuxani | Portfolio",
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
+          <GlobalPointerTrail />
           {children}
         </ThemeProvider>
       </body>
