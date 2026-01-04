@@ -6,7 +6,6 @@ import {
   Hero,
   About,
   Experience,
-  Skills,
   Education,
   Projects,
   Contact,

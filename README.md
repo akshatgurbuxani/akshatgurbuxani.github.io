@@ -53,7 +53,6 @@ akshat.dev/
 │   ├── Navbar.tsx          # Navigation bar with theme toggle
 │   ├── ProjectModal.tsx    # Project detail modal
 │   ├── Card.tsx            # Section wrapper component
-│   ├── ThemeToggle.tsx     # Theme switcher
 │   └── index.ts            # Component exports
 ├── constants/              # Design system & app constants
 │   ├── design.ts           # Design tokens (colors, gradients, spacing)
@@ -88,27 +87,34 @@ akshat.dev/
 
 ```mermaid
 graph TD
-    Page[app/page.tsx] --> Hero[Hero]
-    Page --> About[About]
-    Page --> Experience[Experience]
-    Page --> Projects[Projects]
-    Page --> Skills[Skills]
-    Page --> Education[Education]
-    Page --> Contact[Contact]
-    Page --> ThemeToggle[ThemeToggle]
+    Layout[app/layout.tsx] --> ThemeProvider[ThemeProvider]
+    ThemeProvider --> Page[app/page.tsx]
+
+    Page --> Navbar[Navbar]
+    Page --> Hero[Hero]
+    Page --> AboutCard[Card #about]
+    Page --> ExperienceCard[Card #experience]
+    Page --> ProjectsCard[Card #projects]
+    Page --> EducationCard[Card #education]
+    Page --> ContactCard[Card #contact]
+
+    AboutCard --> About[About]
+    ExperienceCard --> Experience[Experience]
+    ProjectsCard --> Projects[Projects]
+    EducationCard --> Education[Education]
+    ContactCard --> Contact[Contact]
+    
+    Navbar --> ThemeToggleButton[ThemeToggleButton (internal)]
     
     Hero --> AtmosphericBackground[AtmosphericBackground]
     
-    Projects --> ProjectStack[ProjectStack]
-    ProjectStack --> ProjectItem[ProjectItem]
-    ProjectItem --> CollapsedView[CollapsedView]
-    ProjectItem --> ExpandedView[ExpandedView]
+    Projects --> ProjectCard[ProjectCard (internal)]
+    Projects --> ProjectModal[ProjectModal]
     
     subgraph Data[Data Layer]
         PersonalData[data/personal.ts]
         ExperienceData[data/experience.ts]
         ProjectsData[data/projects.ts]
-        SkillsData[data/skills.ts]
         EducationData[data/education.ts]
         Types[types/index.ts]
     end
@@ -121,18 +127,18 @@ graph TD
     PersonalData --> Hero
     PersonalData --> About
     PersonalData --> Contact
+    PersonalData --> Navbar
     ExperienceData --> Experience
     ProjectsData --> Projects
-    SkillsData --> Skills
     EducationData --> Education
     Types --> AllComponents[All Components]
     
-    ThemeContext --> ThemeToggle
+    ThemeContext --> Navbar
     ThemeContext --> AllComponents
     Globals --> AllComponents
     
     style Projects fill:#9333ea,color:#fff
-    style ProjectStack fill:#a855f7,color:#fff
+    style ProjectModal fill:#a855f7,color:#fff
     style ThemeContext fill:#ec4899,color:#fff
 ```
 
