@@ -107,7 +107,7 @@ export default function Contact() {
                 <div className="relative z-10 flex flex-col items-center">
                   {/* Icon Container with Enhanced Gradient */}
                   <motion.div 
-                    className={`w-16 h-16 sm:w-20 sm:h-24 mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center ${config.iconColor || "text-white"} shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-300`}
+                    className={`w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center ${config.iconColor || "text-white"} shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-300`}
                     whileHover={{ 
                       scale: 1.15, 
                       rotate: [0, -5, 5, -5, 0],
