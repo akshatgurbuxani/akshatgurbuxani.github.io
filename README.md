@@ -1,4 +1,4 @@
-# akshat.dev
+# portfolio
 
 Personal portfolio site built with **Next.js (App Router)** + **TypeScript** + **Tailwind**. This repo is configured for **static export** (`output: "export"`), so the build output is the `out/` directory.
 
