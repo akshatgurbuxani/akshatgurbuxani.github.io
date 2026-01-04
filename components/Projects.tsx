@@ -175,7 +175,7 @@ export default function Projects() {
 
   return (
     <>
-      <div className="w-full bg-gray-50 dark:bg-gray-800 py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+      <div className="w-full bg-gray-50 dark:bg-gray-800 py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <SectionHeader 
             title="Projects" 
