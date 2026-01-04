@@ -41,7 +41,7 @@ Then open `http://localhost:3000`.
 ### Project structure (key files)
 
 ```
-akshat.dev/
+akshatgurbuxani.github.io/
 ├── app/                    # Next.js App Router
 │   ├── layout.tsx          # Root layout (ThemeProvider)
 │   ├── page.tsx            # Main page composition
