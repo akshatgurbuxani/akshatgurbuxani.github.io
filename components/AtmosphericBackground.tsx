@@ -4,6 +4,7 @@ import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import FloatingShapes from "./FloatingShapes";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAnimationEnabled } from "@/utils/useAnimationEnabled";
 
 // =============================================================================
 // Configuration
@@ -297,6 +298,7 @@ function ConstellationCanvas({
 
 export default function AtmosphericBackground() {
   const { theme } = useTheme();
+  const animationEnabled = useAnimationEnabled();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { damping: 50, stiffness: 200 });
@@ -343,13 +345,15 @@ export default function AtmosphericBackground() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[var(--background)]">
-      {/* 3D Floating Shapes */}
-      <div className="absolute inset-0 z-10 opacity-60">
-        <FloatingShapes mousePosition={mousePosition} />
-      </div>
+      {/* 3D Floating Shapes - disabled when animations are off */}
+      {animationEnabled && (
+        <div className="absolute inset-0 z-10 opacity-60">
+          <FloatingShapes mousePosition={mousePosition} />
+        </div>
+      )}
 
-      {/* Interactive Constellation (primary visible interaction layer) */}
-      {mounted && (
+      {/* Interactive Constellation - disabled when animations are off */}
+      {mounted && animationEnabled && (
         <ConstellationCanvas
           theme={theme}
           pointerRef={pointerRef}
@@ -357,48 +361,71 @@ export default function AtmosphericBackground() {
         />
       )}
 
-      {/* Interactive Grid with Enhanced Parallax */}
-      <motion.div
-        className="absolute inset-0 opacity-[0.10] dark:opacity-[0.14] text-slate-600 dark:text-slate-400"
-        style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-          backgroundSize: "48px 48px",
-          translateX: useTransform(smoothMouseX, [-0.5, 0.5], [-25, 25]),
-          translateY: useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]),
-        }}
-      />
+      {/* Static Grid (no parallax when animations disabled) */}
+      {animationEnabled ? (
+        <motion.div
+          className="absolute inset-0 opacity-[0.10] dark:opacity-[0.14] text-slate-600 dark:text-slate-400"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+            backgroundSize: "48px 48px",
+            translateX: useTransform(smoothMouseX, [-0.5, 0.5], [-25, 25]),
+            translateY: useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]),
+          }}
+        />
+      ) : (
+        <div
+          className="absolute inset-0 opacity-[0.10] dark:opacity-[0.14] text-slate-600 dark:text-slate-400"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+      )}
 
-      {/* Aurora Blobs with Enhanced Mouse Interaction */}
+      {/* Aurora Blobs - static when animations disabled */}
       <div className="relative w-full h-full">
-        {BLOBS.map((blob, index) => (
-          <motion.div
-            key={index}
-            className={`absolute rounded-full blur-[140px] mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-50 ${blob.color} ${blob.size}`}
-            animate={{
-              x: [blob.initialX, `${parseInt(blob.initialX) + 15}%`, blob.initialX],
-              y: [blob.initialY, `${parseInt(blob.initialY) + 10}%`, blob.initialY],
-              scale: [1, 1.15, 1],
-            }}
-            transition={{ duration: blob.duration, repeat: Infinity, ease: "easeInOut" }}
-            style={{
-              translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -40, index * 40]),
-              translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -40, index * 40]),
-            }}
-          />
-        ))}
+        {BLOBS.map((blob, index) =>
+          animationEnabled ? (
+            <motion.div
+              key={index}
+              className={`absolute rounded-full blur-[140px] mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-50 ${blob.color} ${blob.size}`}
+              animate={{
+                x: [blob.initialX, `${parseInt(blob.initialX) + 15}%`, blob.initialX],
+                y: [blob.initialY, `${parseInt(blob.initialY) + 10}%`, blob.initialY],
+                scale: [1, 1.15, 1],
+              }}
+              transition={{ duration: blob.duration, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -40, index * 40]),
+                translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -40, index * 40]),
+              }}
+            />
+          ) : (
+            <div
+              key={index}
+              className={`absolute rounded-full blur-[140px] mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-50 ${blob.color} ${blob.size}`}
+              style={{
+                left: blob.initialX,
+                top: blob.initialY,
+              }}
+            />
+          )
+        )}
       </div>
 
-      {/* Enhanced Interactive Spotlight */}
-      <motion.div
-        className="absolute inset-0 z-[1]"
-        style={{
-          background: useTransform(
-            [smoothMouseX, smoothMouseY],
-            ([x, y]) =>
-              `radial-gradient(900px circle at ${(x as number + 0.5) * 100}% ${(y as number + 0.5) * 100}%, rgba(139, 92, 246, 0.20), rgba(236, 72, 153, 0.14), transparent 70%)`
-          ),
-        }}
-      />
+      {/* Enhanced Interactive Spotlight - disabled when animations are off */}
+      {animationEnabled && (
+        <motion.div
+          className="absolute inset-0 z-[1]"
+          style={{
+            background: useTransform(
+              [smoothMouseX, smoothMouseY],
+              ([x, y]) =>
+                `radial-gradient(900px circle at ${(x as number + 0.5) * 100}% ${(y as number + 0.5) * 100}%, rgba(139, 92, 246, 0.20), rgba(236, 72, 153, 0.14), transparent 70%)`
+            ),
+          }}
+        />
+      )}
 
       {/* Vignette */}
       <div className="absolute inset-0 bg-radial-vignette opacity-50 dark:opacity-70 z-[3]" />

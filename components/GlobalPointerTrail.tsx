@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAnimationEnabled } from "@/utils/useAnimationEnabled";
 
 type Point = { x: number; y: number };
 type TrailPoint = { x: number; y: number; r: number; alpha: number };
@@ -28,6 +29,7 @@ function usePrefersReducedMotion() {
 export default function GlobalPointerTrail() {
   const { theme } = useTheme();
   const reducedMotion = usePrefersReducedMotion();
+  const animationEnabled = useAnimationEnabled();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -51,7 +53,7 @@ export default function GlobalPointerTrail() {
   }, [theme]);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !animationEnabled) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -135,10 +137,10 @@ export default function GlobalPointerTrail() {
       window.removeEventListener("resize", resize);
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
     };
-  }, [palette, reducedMotion, theme]);
+  }, [palette, reducedMotion, theme, animationEnabled]);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !animationEnabled) return;
     const handlePointerMove = (clientX: number, clientY: number) => {
       pointerRef.current = { x: clientX, y: clientY };
     };
@@ -163,9 +165,9 @@ export default function GlobalPointerTrail() {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("touchmove", onTouchMove);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, animationEnabled]);
 
-  if (reducedMotion) return null;
+  if (reducedMotion || !animationEnabled) return null;
 
   return (
     <canvas

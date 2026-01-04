@@ -91,7 +91,7 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
       viewport={{ once: true }}
     >
       {/* Content card */}
-      <div className={`bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all w-full md:w-[45%] ml-8 sm:ml-10 md:ml-0 ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
+      <div className={`bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all w-full md:w-[45%] ml-0 md:ml-0 ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
         {/* Header */}
         <div className="flex flex-col mb-4">
           <div>
@@ -184,7 +184,7 @@ export default function Experience() {
         {/* Timeline container with centered vertical line */}
         <div className="relative pb-16">
           {/* Vertical timeline line - desktop centered, mobile on left */}
-          <div className="absolute left-4 sm:left-5 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500" />
+          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500" />
 
           <div className="relative">
             {EXPERIENCES.map((experience, index) => (

@@ -109,5 +109,64 @@ graph TD
 - **`data/projects.ts`**: project list + links
 - **`data/education.ts`**: education
 
+## Developer tools
+
+### Animation control toggle
+
+Heavy background animations are automatically disabled on mobile devices for better performance. Developers can override this behavior using localStorage:
+
+**Disable animations:**
+```javascript
+localStorage.setItem("animations-enabled", "false")
+```
+
+**Enable animations:**
+```javascript
+localStorage.setItem("animations-enabled", "true")
+```
+
+**Reset to default (mobile=off, desktop=on):**
+```javascript
+localStorage.removeItem("animations-enabled")
+```
+
+Refresh the page after changing the setting. The toggle affects:
+- Constellation canvas (particle system)
+- 3D floating shapes
+- Aurora blob animations
+- Parallax grid effects
+- Pointer trail
+
+### Config override toggle
+
+Override configuration values during development without modifying source files. Useful for testing different config values quickly.
+
+**Override a config value:**
+```javascript
+localStorage.setItem("config-override", JSON.stringify({
+  "SOCIAL_ICON_CONFIG.Email.gradient": "from-blue-500 to-cyan-500"
+}))
+```
+
+**Override multiple values:**
+```javascript
+localStorage.setItem("config-override", JSON.stringify({
+  "SOCIAL_ICON_CONFIG.Email.gradient": "from-blue-500 to-cyan-500",
+  "SOCIAL_ICON_CONFIG.Email.label": "Send Email"
+}))
+```
+
+**View current overrides:**
+```javascript
+JSON.parse(localStorage.getItem("config-override") || "{}")
+```
+
+**Clear all overrides:**
+```javascript
+localStorage.removeItem("config-override")
+```
+
+Refresh the page after setting overrides. See `utils/README.md` for more details and available config paths.
+
 ## License
 MIT

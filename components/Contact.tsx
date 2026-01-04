@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { PERSONAL, SOCIAL_LINKS } from "@/data";
-import type { SocialLink } from "@/types";
+import { SOCIAL_ICON_CONFIG } from "@/constants";
+import { useConfig } from "@/utils/useConfig";
 import { GitHubIcon, LinkedInIcon, EmailIcon } from "@/components/ui";
 
 // =============================================================================
@@ -28,29 +29,20 @@ const itemVariants = {
 };
 
 // =============================================================================
-// Social Icon Configuration
+// Social Icon Helper
 // =============================================================================
 
-const SOCIAL_ICON_CONFIG: Record<string, { icon: JSX.Element; gradient: string; label: string; hoverGradient: string; iconColor?: string }> = {
-  Email: { 
-    icon: <EmailIcon className="w-12 h-12" />, 
-    gradient: "from-red-500 via-pink-500 to-purple-500", 
-    hoverGradient: "from-red-400 via-pink-400 to-purple-400",
-    label: "Email" 
-  },
-  GitHub: { 
-    icon: <GitHubIcon className="w-12 h-12" />, 
-    gradient: "from-gray-300 via-gray-200 to-white dark:from-gray-800 dark:via-gray-900 dark:to-black", 
-    hoverGradient: "from-gray-400 via-gray-300 to-gray-200 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900",
-    label: "GitHub",
-    iconColor: "text-black dark:text-white"
-  },
-  LinkedIn: { 
-    icon: <LinkedInIcon className="w-12 h-12" />, 
-    gradient: "from-blue-500 via-blue-600 to-indigo-600", 
-    hoverGradient: "from-blue-400 via-blue-500 to-indigo-500",
-    label: "LinkedIn" 
-  },
+const getSocialIcon = (name: string) => {
+  switch (name) {
+    case "Email":
+      return <EmailIcon className="w-12 h-12" />;
+    case "GitHub":
+      return <GitHubIcon className="w-12 h-12" />;
+    case "LinkedIn":
+      return <LinkedInIcon className="w-12 h-12" />;
+    default:
+      return null;
+  }
 };
 
 // =============================================================================
@@ -59,6 +51,8 @@ const SOCIAL_ICON_CONFIG: Record<string, { icon: JSX.Element; gradient: string; 
 
 export default function Contact() {
   const currentYear = new Date().getFullYear();
+  // Apply developer config overrides (if any)
+  const iconConfig = useConfig(SOCIAL_ICON_CONFIG);
 
   return (
     <div className="w-full py-16 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center">
@@ -83,8 +77,10 @@ export default function Contact() {
         {/* Contact Grid with Glassmorphism */}
         <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16 md:mb-20" variants={containerVariants}>
           {SOCIAL_LINKS.map((social, index) => {
-            const config = SOCIAL_ICON_CONFIG[social.name];
+            const config = iconConfig[social.name as keyof typeof iconConfig];
             if (!config) return null;
+
+            const icon = getSocialIcon(social.name);
 
             return (
               <motion.a
@@ -107,14 +103,14 @@ export default function Contact() {
                 <div className="relative z-10 flex flex-col items-center">
                   {/* Icon Container with Enhanced Gradient */}
                   <motion.div 
-                    className={`w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center ${config.iconColor || "text-white"} shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-300`}
+                    className={`w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 rounded-xl sm:rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center ${("iconColor" in config ? config.iconColor : undefined) || "text-white"} shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-300`}
                     whileHover={{ 
                       scale: 1.15, 
                       rotate: [0, -5, 5, -5, 0],
                       boxShadow: "0 20px 40px rgba(139, 92, 246, 0.4)"
                     }}
                   >
-                    {config.icon}
+                    {icon}
                   </motion.div>
                   
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
