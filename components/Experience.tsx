@@ -126,7 +126,7 @@ function ExperienceCard({ experience, index, isLast }: ExperienceCardProps) {
               )}
             </div>
           </div>
-          <div className={`mt-2 ${isLeft ? 'text-left' : 'text-right'}`}>
+          <div className="mt-2 text-left">
             <p className="text-gray-600 dark:text-gray-400 font-medium">
               {experience.startDate} – {experience.endDate}
             </p>
