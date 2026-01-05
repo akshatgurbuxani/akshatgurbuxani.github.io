@@ -12,6 +12,7 @@ function clamp(n: number, min: number, max: number) {
 }
 
 function usePrefersReducedMotion() {
+  // Default to false to match server-side render and prevent hydration mismatch
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -174,6 +175,12 @@ export default function GlobalPointerTrail() {
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-[9999]"
       aria-hidden="true"
+      style={{
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden',
+        transform: 'translateZ(0)',
+        willChange: 'contents',
+      }}
     />
   );
 }

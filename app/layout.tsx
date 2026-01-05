@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="antialiased" style={{ minHeight: '100vh', position: 'relative' }}>
         <ThemeProvider>
           <GlobalPointerTrail />
           {children}

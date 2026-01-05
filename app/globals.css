@@ -36,6 +36,9 @@ body {
   width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent layout shifts and rendering artifacts */
+  min-height: 100vh;
+  position: relative;
 }
 
 @layer utilities {
@@ -64,4 +67,12 @@ body {
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+/* Prevent rendering artifacts and layout shifts */
+canvas {
+  display: block;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }

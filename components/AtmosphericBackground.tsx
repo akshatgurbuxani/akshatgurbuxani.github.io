@@ -288,6 +288,12 @@ function ConstellationCanvas({
       ref={canvasRef}
       className="absolute inset-0 z-[2] opacity-80 dark:opacity-90"
       aria-hidden="true"
+      style={{
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden',
+        transform: 'translateZ(0)',
+        willChange: 'contents',
+      }}
     />
   );
 }
@@ -307,6 +313,24 @@ export default function AtmosphericBackground() {
   const pointerRef = useRef<Point>({ x: 0, y: 0 });
   const [mounted, setMounted] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
+
+  // All hooks must be called unconditionally at the top level
+  // Grid parallax transforms
+  const gridTranslateX = useTransform(smoothMouseX, [-0.5, 0.5], [-25, 25]);
+  const gridTranslateY = useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]);
+
+  // Blob transforms (for each blob)
+  const blobTransforms = BLOBS.map((_, index) => ({
+    translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -40, index * 40]),
+    translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -40, index * 40]),
+  }));
+
+  // Spotlight background transform
+  const spotlightBackground = useTransform(
+    [smoothMouseX, smoothMouseY],
+    ([x, y]) =>
+      `radial-gradient(900px circle at ${(x as number + 0.5) * 100}% ${(y as number + 0.5) * 100}%, rgba(139, 92, 246, 0.20), rgba(236, 72, 153, 0.14), transparent 70%)`
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -344,7 +368,7 @@ export default function AtmosphericBackground() {
   }, [mouseX, mouseY]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[var(--background)]">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[var(--background)] will-change-contents" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
       {/* 3D Floating Shapes - disabled when animations are off */}
       {animationEnabled && (
         <div className="absolute inset-0 z-10 opacity-60">
@@ -361,26 +385,22 @@ export default function AtmosphericBackground() {
         />
       )}
 
-      {/* Static Grid (no parallax when animations disabled) */}
-      {animationEnabled ? (
-        <motion.div
-          className="absolute inset-0 opacity-[0.10] dark:opacity-[0.14] text-slate-600 dark:text-slate-400"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-            backgroundSize: "48px 48px",
-            translateX: useTransform(smoothMouseX, [-0.5, 0.5], [-25, 25]),
-            translateY: useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]),
-          }}
-        />
-      ) : (
-        <div
-          className="absolute inset-0 opacity-[0.10] dark:opacity-[0.14] text-slate-600 dark:text-slate-400"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-            backgroundSize: "48px 48px",
-          }}
-        />
-      )}
+      {/* Static Grid - always render with motion.div to prevent layout shifts */}
+      <motion.div
+        className="absolute inset-0 opacity-[0.10] dark:opacity-[0.14] text-slate-600 dark:text-slate-400"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+          backgroundSize: "48px 48px",
+          backgroundPosition: "0 0",
+          backgroundRepeat: "repeat",
+          translateX: animationEnabled ? gridTranslateX : 0,
+          translateY: animationEnabled ? gridTranslateY : 0,
+          willChange: animationEnabled ? 'transform' : 'auto',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          transform: 'translateZ(0)',
+        }}
+      />
 
       {/* Aurora Blobs - static when animations disabled */}
       <div className="relative w-full h-full">
@@ -396,8 +416,8 @@ export default function AtmosphericBackground() {
               }}
               transition={{ duration: blob.duration, repeat: Infinity, ease: "easeInOut" }}
               style={{
-                translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -40, index * 40]),
-                translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -40, index * 40]),
+                translateX: blobTransforms[index].translateX,
+                translateY: blobTransforms[index].translateY,
               }}
             />
           ) : (
@@ -418,11 +438,7 @@ export default function AtmosphericBackground() {
         <motion.div
           className="absolute inset-0 z-[1]"
           style={{
-            background: useTransform(
-              [smoothMouseX, smoothMouseY],
-              ([x, y]) =>
-                `radial-gradient(900px circle at ${(x as number + 0.5) * 100}% ${(y as number + 0.5) * 100}%, rgba(139, 92, 246, 0.20), rgba(236, 72, 153, 0.14), transparent 70%)`
-            ),
+            background: spotlightBackground,
           }}
         />
       )}

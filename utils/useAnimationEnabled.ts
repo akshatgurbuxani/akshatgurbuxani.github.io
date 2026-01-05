@@ -13,8 +13,9 @@ import { useIsMobile } from "./useIsMobile";
  * - localStorage.removeItem("animations-enabled") → use default (mobile=off, desktop=on)
  */
 export function useAnimationEnabled() {
-  const isMobile = useIsMobile();
-  const [enabled, setEnabled] = useState(true); // Default to true for SSR
+  const { isMobile, mounted } = useIsMobile();
+  // Default to false to prevent hydration mismatch (mobile default is false)
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -37,8 +38,10 @@ export function useAnimationEnabled() {
       setEnabled(!isMobile);
     };
 
-    // Initial check
-    checkEnabled();
+    // Only check after mobile detection is mounted to prevent hydration mismatch
+    if (mounted) {
+      checkEnabled();
+    }
 
     // Listen for storage changes (in case developer changes it in another tab)
     const handleStorageChange = (e: StorageEvent) => {
@@ -52,7 +55,7 @@ export function useAnimationEnabled() {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [isMobile]);
+  }, [isMobile, mounted]);
 
   return enabled;
 }

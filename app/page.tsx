@@ -17,7 +17,7 @@ import {
 
 export default function Home() {
   return (
-    <main className="relative w-full">
+    <main className="relative w-full min-h-screen" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
       {/* Navigation */}
       <Navbar />
 
