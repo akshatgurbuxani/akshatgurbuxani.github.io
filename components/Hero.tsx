@@ -50,6 +50,7 @@ function SocialButtons() {
       icon: <DownloadIcon className="w-5 h-5" />,
       borderColor: "border-gray-800 dark:border-gray-300",
       href: PATHS.resume,
+      isExternal: true,
     },
   ];
 
@@ -59,9 +60,9 @@ function SocialButtons() {
         <motion.a
           key={button.name}
           href={button.href}
-          download={button.name === "Download CV" ? PATHS.resumeDownloadName : undefined}
-          target={button.name !== "Download CV" ? "_blank" : undefined}
-          rel={button.name !== "Download CV" ? "noopener noreferrer" : undefined}
+download={button.isExternal ? PATHS.resume : undefined}
+            target={button.isExternal ? "_blank" : undefined}
+            rel={button.isExternal ? "noopener noreferrer" : undefined}
           className={`px-6 py-3 rounded-full border-2 ${button.borderColor} bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium text-sm sm:text-base`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

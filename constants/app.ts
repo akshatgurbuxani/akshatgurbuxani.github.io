@@ -7,8 +7,7 @@
  * File Paths
  */
 export const PATHS = {
-  resume: "/akshat_gurbuxani_resume.pdf",
-  resumeDownloadName: "akshat_gurbuxani_resume.pdf",
+  resume: "https://drive.google.com/file/d/18HhwANW5DYV4IxqQC0ADiypW49TRs6I6/view?usp=sharing",
 } as const;
 
 /**

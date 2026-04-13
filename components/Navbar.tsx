@@ -198,7 +198,8 @@ export default function Navbar() {
             <ThemeToggleButton />
             <motion.a
               href={PATHS.resume}
-              download={PATHS.resumeDownloadName}
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -255,7 +256,8 @@ export default function Navbar() {
                 )}
                 <a
                   href={PATHS.resume}
-                  download={PATHS.resumeDownloadName}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold flex-1 text-center"
                 >
                   Resume
