@@ -9,14 +9,6 @@ import { GitHubIcon, ExternalLinkIcon, SectionHeader } from "@/components/ui";
 // Animation Variants
 // =============================================================================
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
 // Create directional variants based on index
 const getItemVariants = (index: number) => {
   const isEven = index % 2 === 0;
@@ -56,9 +48,9 @@ function TechnologyTags({ technologies }: { technologies?: string[] }) {
 
   return (
     <div className="flex flex-wrap gap-2 mt-4">
-      {technologies.map((tech, index) => (
+      {technologies.map((tech) => (
         <span
-          key={index}
+          key={tech}
           className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium"
         >
           {tech}

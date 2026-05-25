@@ -1,9 +1,11 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { PERSONAL, SOCIAL_LINKS } from "@/data";
-import AtmosphericBackground from "./AtmosphericBackground";
 import { GitHubIcon, LinkedInIcon, DownloadIcon, ChevronDownIcon } from "@/components/ui";
+
+const AtmosphericBackground = dynamic(() => import("./AtmosphericBackground"), { ssr: false });
 import { PATHS } from "@/constants";
 
 // =============================================================================
@@ -60,8 +62,7 @@ function SocialButtons() {
         <motion.a
           key={button.name}
           href={button.href}
-download={button.isExternal ? PATHS.resume : undefined}
-            target={button.isExternal ? "_blank" : undefined}
+target={button.isExternal ? "_blank" : undefined}
             rel={button.isExternal ? "noopener noreferrer" : undefined}
           className={`px-6 py-3 rounded-full border-2 ${button.borderColor} bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium text-sm sm:text-base`}
           whileHover={{ scale: 1.05 }}
@@ -112,22 +113,15 @@ export default function Hero() {
           className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 text-gray-700 dark:text-gray-300"
           variants={itemVariants}
         >
-          {PERSONAL.title.split(" @ ").map((part, index) => {
-            if (index === 0) {
-              return <span key={index}>{part} @ </span>;
-            }
-            return (
-              <a
-                key={index}
-                href="https://www.semiotic.ai/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-300 dark:hover:to-pink-300 transition-all duration-300 underline decoration-2 underline-offset-4 decoration-purple-600/50 dark:decoration-purple-400/50 hover:decoration-purple-600 dark:hover:decoration-purple-400"
-              >
-                {part}
-              </a>
-            );
-          })}
+          {PERSONAL.title} @{" "}
+          <a
+            href={PERSONAL.companyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-300 dark:hover:to-pink-300 transition-all duration-300 underline decoration-2 underline-offset-4 decoration-purple-600/50 dark:decoration-purple-400/50 hover:decoration-purple-600 dark:hover:decoration-purple-400"
+          >
+            {PERSONAL.company}
+          </a>
         </motion.h2>
 
         <motion.p

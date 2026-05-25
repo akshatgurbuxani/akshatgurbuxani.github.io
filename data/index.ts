@@ -39,15 +39,4 @@ export {
   getProjectsByTechnology,
 } from "./projects";
 
-// Re-export types for convenience
-export type {
-  PersonalInfo,
-  SocialLink,
-  Experience,
-  BulletPoint,
-  Education,
-  Publication,
-  Skill,
-  SkillCategory,
-  Project,
-} from "@/types";
+

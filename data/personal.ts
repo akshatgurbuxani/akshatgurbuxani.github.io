@@ -28,7 +28,9 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 export const PERSONAL: PersonalInfo = {
   name: "Akshat Gurbuxani",
-  title: "AI Researcher @ Semiotic Labs",
+  title: "AI Researcher",
+  company: "Semiotic Labs",
+  companyUrl: "https://www.semiotic.ai/",
   tagline: "Building intelligent systems that transform complex challenges into scalable AI solutions",
   location: "San Francisco, CA",
   email: "imaksht@gmail.com",

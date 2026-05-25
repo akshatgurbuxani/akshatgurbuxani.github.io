@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { SKILL_CATEGORIES, getTopSkills } from "@/data";
-import type { SkillCategory, Skill } from "@/types";
-import { SectionHeader } from "@/components/ui";
+import type { SkillCategory } from "@/types";
+import { SectionHeader, SkillBar } from "@/components/ui";
 
 // =============================================================================
 // Animation Variants
@@ -21,40 +21,6 @@ const itemVariants = {
   hidden: { opacity: 0, x: -15 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
-
-// =============================================================================
-// Skill Bar
-// =============================================================================
-
-interface SkillBarProps {
-  skill: Skill;
-  gradient: string;
-  index: number;
-}
-
-function SkillBar({ skill, gradient, index }: SkillBarProps) {
-  return (
-    <div className="mb-3 last:mb-0">
-      <div className="flex justify-between items-center mb-1">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          {skill.name}
-        </span>
-        <span className="text-xs text-gray-500 dark:text-gray-500">
-          {skill.proficiency}%
-        </span>
-      </div>
-      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-        <motion.div
-          className={`h-full bg-gradient-to-r ${gradient} rounded-full`}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${skill.proficiency}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: index * 0.02 }}
-        />
-      </div>
-    </div>
-  );
-}
 
 // =============================================================================
 // Skill Category Section (for single card layout)

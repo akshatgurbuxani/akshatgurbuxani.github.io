@@ -17,6 +17,8 @@ export interface SocialLink {
 export interface PersonalInfo {
   name: string;
   title: string;
+  company: string;
+  companyUrl: string;
   tagline: string;
   location: string;
   email: string;
@@ -116,24 +118,4 @@ export interface Publication {
   url?: string;
 }
 
-// =============================================================================
-// Deck of Cards UI Types
-// =============================================================================
 
-/**
- * Props for Card wrapper component
- */
-export interface CardProps {
-  children: React.ReactNode;
-  index: number;
-  className?: string;
-  id?: string;
-}
-
-/**
- * Props for ProjectCard component
- */
-export interface ProjectCardProps {
-  project: Project;
-  index: number;
-}

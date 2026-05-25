@@ -64,13 +64,11 @@ function ProjectCard({
               href={project.certificateUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all"
+              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-amber-400 hover:bg-white/30 transition-all"
               onClick={(e) => e.stopPropagation()}
               aria-label="View certificate"
             >
-              <span className="relative w-5 h-5">
-                <span className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500" style={{ maskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath stroke=\'black\' stroke-width=\'2\' fill=\'none\' d=\'M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14\'/%3E%3C/svg%3E")', WebkitMaskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath stroke=\'black\' stroke-width=\'2\' fill=\'none\' d=\'M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14\'/%3E%3C/svg%3E")', maskSize: 'contain', WebkitMaskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat', maskPosition: 'center', WebkitMaskPosition: 'center' }} />
-              </span>
+              <ExternalLinkIcon className="w-5 h-5" />
             </a>
           )}
           {project.liveUrl && (
@@ -78,13 +76,11 @@ function ProjectCard({
               href={project.liveUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all"
+              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-purple-400 hover:bg-white/30 transition-all"
               onClick={(e) => e.stopPropagation()}
               aria-label="Live demo"
             >
-              <span className="relative w-5 h-5">
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600" style={{ maskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath stroke=\'black\' stroke-width=\'2\' fill=\'none\' d=\'M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14\'/%3E%3C/svg%3E")', WebkitMaskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath stroke=\'black\' stroke-width=\'2\' fill=\'none\' d=\'M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14\'/%3E%3C/svg%3E")', maskSize: 'contain', WebkitMaskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat', maskPosition: 'center', WebkitMaskPosition: 'center' }} />
-              </span>
+              <ExternalLinkIcon className="w-5 h-5" />
             </a>
           )}
         </div>

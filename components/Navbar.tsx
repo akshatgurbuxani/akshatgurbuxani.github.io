@@ -104,7 +104,6 @@ export default function Navbar() {
         if (element) {
           const rect = element.getBoundingClientRect();
           const elementTop = rect.top + window.scrollY;
-          const elementBottom = elementTop + rect.height;
           
           // If we're past the start of this section, it's active
           if (scrollPosition >= elementTop - 100) {

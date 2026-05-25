@@ -9,14 +9,6 @@ import { SectionHeader, ExternalLinkIcon, BookIcon } from "@/components/ui";
 // Animation Variants
 // =============================================================================
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
 // Create directional variants based on index
 const getItemVariants = (index: number) => {
   const directions = [

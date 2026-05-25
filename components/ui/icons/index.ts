@@ -20,6 +20,5 @@ export { default as SunIcon } from "./SunIcon";
 export { default as ChevronDownIcon } from "./ChevronDownIcon";
 
 // Decorative Icons
-export { default as AcademicCapIcon } from "./AcademicCapIcon";
 export { default as BookIcon } from "./BookIcon";
 
