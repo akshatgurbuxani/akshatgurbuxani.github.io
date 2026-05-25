@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useAnimationEnabled } from "@/utils/useAnimationEnabled";
+import { useAnimationPreference } from "@/utils/useAnimationPreference";
 
 type Point = { x: number; y: number };
 type TrailPoint = { x: number; y: number; r: number; alpha: number };
@@ -11,26 +11,9 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-function usePrefersReducedMotion() {
-  // Default to false to match server-side render and prevent hydration mismatch
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(Boolean(media.matches));
-    update();
-    media.addEventListener?.("change", update);
-    return () => media.removeEventListener?.("change", update);
-  }, []);
-
-  return reduced;
-}
-
 export default function GlobalPointerTrail() {
   const { theme } = useTheme();
-  const reducedMotion = usePrefersReducedMotion();
-  const animationEnabled = useAnimationEnabled();
+  const { animationsEnabled, reducedMotion } = useAnimationPreference();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -54,7 +37,7 @@ export default function GlobalPointerTrail() {
   }, [theme]);
 
   useEffect(() => {
-    if (reducedMotion || !animationEnabled) return;
+    if (reducedMotion || !animationsEnabled) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -138,10 +121,10 @@ export default function GlobalPointerTrail() {
       window.removeEventListener("resize", resize);
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
     };
-  }, [palette, reducedMotion, theme, animationEnabled]);
+  }, [palette, reducedMotion, theme, animationsEnabled]);
 
   useEffect(() => {
-    if (reducedMotion || !animationEnabled) return;
+    if (reducedMotion || !animationsEnabled) return;
     const handlePointerMove = (clientX: number, clientY: number) => {
       pointerRef.current = { x: clientX, y: clientY };
     };
@@ -166,9 +149,9 @@ export default function GlobalPointerTrail() {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("touchmove", onTouchMove);
     };
-  }, [reducedMotion, animationEnabled]);
+  }, [reducedMotion, animationsEnabled]);
 
-  if (reducedMotion || !animationEnabled) return null;
+  if (reducedMotion || !animationsEnabled) return null;
 
   return (
     <canvas

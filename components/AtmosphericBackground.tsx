@@ -4,7 +4,9 @@ import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import FloatingShapes from "./FloatingShapes";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useAnimationEnabled } from "@/utils/useAnimationEnabled";
+import { useAnimationPreference } from "@/utils/useAnimationPreference";
+
+type Point = { x: number; y: number };
 
 // =============================================================================
 // Configuration
@@ -16,27 +18,6 @@ const BLOBS = [
   { color: "bg-pink-600/30", size: "w-[500px] h-[500px]", initialX: "10%", initialY: "60%", duration: 22 },
   { color: "bg-cyan-600/30", size: "w-[650px] h-[650px]", initialX: "70%", initialY: "30%", duration: 28 },
 ];
-
-// =============================================================================
-// Helpers
-// =============================================================================
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(Boolean(media.matches));
-    update();
-    media.addEventListener?.("change", update);
-    return () => media.removeEventListener?.("change", update);
-  }, []);
-
-  return reduced;
-}
-
-type Point = { x: number; y: number };
 
 type Particle = {
   x: number;
@@ -304,26 +285,33 @@ function ConstellationCanvas({
 
 export default function AtmosphericBackground() {
   const { theme } = useTheme();
-  const animationEnabled = useAnimationEnabled();
+  const { animationsEnabled, reducedMotion, mounted } = useAnimationPreference();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { damping: 50, stiffness: 200 });
   const smoothMouseY = useSpring(mouseY, { damping: 50, stiffness: 200 });
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const pointerRef = useRef<Point>({ x: 0, y: 0 });
-  const [mounted, setMounted] = useState(false);
-  const reducedMotion = usePrefersReducedMotion();
 
-  // All hooks must be called unconditionally at the top level
   // Grid parallax transforms
   const gridTranslateX = useTransform(smoothMouseX, [-0.5, 0.5], [-25, 25]);
   const gridTranslateY = useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]);
 
   // Blob transforms (for each blob)
-  const blobTransforms = BLOBS.map((_, index) => ({
-    translateX: useTransform(smoothMouseX, [-0.5, 0.5], [index * -40, index * 40]),
-    translateY: useTransform(smoothMouseY, [-0.5, 0.5], [index * -40, index * 40]),
-  }));
+  const blobTx0 = useTransform(smoothMouseX, [-0.5, 0.5], [0, 0]);
+  const blobTy0 = useTransform(smoothMouseY, [-0.5, 0.5], [0, 0]);
+  const blobTx1 = useTransform(smoothMouseX, [-0.5, 0.5], [-40, 40]);
+  const blobTy1 = useTransform(smoothMouseY, [-0.5, 0.5], [-40, 40]);
+  const blobTx2 = useTransform(smoothMouseX, [-0.5, 0.5], [-80, 80]);
+  const blobTy2 = useTransform(smoothMouseY, [-0.5, 0.5], [-80, 80]);
+  const blobTx3 = useTransform(smoothMouseX, [-0.5, 0.5], [-120, 120]);
+  const blobTy3 = useTransform(smoothMouseY, [-0.5, 0.5], [-120, 120]);
+  const blobTransforms = [
+    { translateX: blobTx0, translateY: blobTy0 },
+    { translateX: blobTx1, translateY: blobTy1 },
+    { translateX: blobTx2, translateY: blobTy2 },
+    { translateX: blobTx3, translateY: blobTy3 },
+  ];
 
   // Spotlight background transform
   const spotlightBackground = useTransform(
@@ -333,7 +321,6 @@ export default function AtmosphericBackground() {
   );
 
   useEffect(() => {
-    setMounted(true);
     const handlePointerMove = (clientX: number, clientY: number) => {
       const x = clientX / window.innerWidth - 0.5;
       const y = clientY / window.innerHeight - 0.5;
@@ -370,14 +357,14 @@ export default function AtmosphericBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[var(--background)] will-change-contents" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
       {/* 3D Floating Shapes - disabled when animations are off */}
-      {animationEnabled && (
+      {animationsEnabled && (
         <div className="absolute inset-0 z-10 opacity-60">
           <FloatingShapes mousePosition={mousePosition} />
         </div>
       )}
 
       {/* Interactive Constellation - disabled when animations are off */}
-      {mounted && animationEnabled && (
+      {mounted && animationsEnabled && (
         <ConstellationCanvas
           theme={theme}
           pointerRef={pointerRef}
@@ -393,9 +380,9 @@ export default function AtmosphericBackground() {
           backgroundSize: "48px 48px",
           backgroundPosition: "0 0",
           backgroundRepeat: "repeat",
-          translateX: animationEnabled ? gridTranslateX : 0,
-          translateY: animationEnabled ? gridTranslateY : 0,
-          willChange: animationEnabled ? 'transform' : 'auto',
+          translateX: animationsEnabled ? gridTranslateX : 0,
+          translateY: animationsEnabled ? gridTranslateY : 0,
+          willChange: animationsEnabled ? 'transform' : 'auto',
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           transform: 'translateZ(0)',
@@ -405,7 +392,7 @@ export default function AtmosphericBackground() {
       {/* Aurora Blobs - static when animations disabled */}
       <div className="relative w-full h-full">
         {BLOBS.map((blob, index) =>
-          animationEnabled ? (
+          animationsEnabled ? (
             <motion.div
               key={index}
               className={`absolute rounded-full blur-[140px] mix-blend-multiply dark:mix-blend-screen opacity-70 dark:opacity-50 ${blob.color} ${blob.size}`}
@@ -434,7 +421,7 @@ export default function AtmosphericBackground() {
       </div>
 
       {/* Enhanced Interactive Spotlight - disabled when animations are off */}
-      {animationEnabled && (
+      {animationsEnabled && (
         <motion.div
           className="absolute inset-0 z-[1]"
           style={{

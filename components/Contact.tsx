@@ -3,30 +3,10 @@
 import { motion } from "framer-motion";
 import { PERSONAL, SOCIAL_LINKS } from "@/data";
 import { SOCIAL_ICON_CONFIG } from "@/constants";
-import { useConfig } from "@/utils/useConfig";
 import { GitHubIcon, LinkedInIcon, EmailIcon } from "@/components/ui";
+import { staggerContainer, fadeUpBig } from "@/lib/animations";
 
-// =============================================================================
-// Animation Variants
-// =============================================================================
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.9 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } 
-  },
-};
+const containerVariants = staggerContainer(0.15);
 
 // =============================================================================
 // Social Icon Helper
@@ -51,8 +31,6 @@ const getSocialIcon = (name: string) => {
 
 export default function Contact() {
   const currentYear = new Date().getFullYear();
-  // Apply developer config overrides (if any)
-  const iconConfig = useConfig(SOCIAL_ICON_CONFIG);
 
   return (
     <div className="w-full py-16 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center">
@@ -64,7 +42,7 @@ export default function Contact() {
         viewport={{ once: true }}
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="mb-12 sm:mb-16 md:mb-20">
+        <motion.div variants={fadeUpBig} className="mb-12 sm:mb-16 md:mb-20">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
             Reach Out
           </h2>
@@ -77,7 +55,7 @@ export default function Contact() {
         {/* Contact Grid with Glassmorphism */}
         <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16 md:mb-20" variants={containerVariants}>
           {SOCIAL_LINKS.map((social, index) => {
-            const config = iconConfig[social.name as keyof typeof iconConfig];
+            const config = SOCIAL_ICON_CONFIG[social.name as keyof typeof SOCIAL_ICON_CONFIG];
             if (!config) return null;
 
             const icon = getSocialIcon(social.name);
@@ -89,8 +67,8 @@ export default function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative p-8 rounded-3xl overflow-hidden"
-                variants={itemVariants}
-                whileHover={{ y: -8, scale: 1.05 }}
+        variants={fadeUpBig}
+        whileHover={{ y: -8, scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 {/* Glassmorphism Background */}
@@ -130,7 +108,7 @@ export default function Contact() {
         </motion.div>
 
         {/* Footer */}
-        <motion.footer className="pt-12 border-t border-gray-200 dark:border-gray-700" variants={itemVariants}>
+        <motion.footer className="pt-12 border-t border-gray-200 dark:border-gray-700" variants={fadeUpBig}>
           <div className="flex flex-col items-center gap-4">
             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
               © {currentYear} {PERSONAL.name}
