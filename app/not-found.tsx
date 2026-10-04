@@ -2,19 +2,13 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 px-4">
-      <h1 className="text-6xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent mb-4">
-        404
-      </h1>
-      <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 text-center">
-        This page does not exist.
-      </p>
-      <Link
-        href="/"
-        className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
-      >
-        Go Home
-      </Link>
-    </div>
+    <main className="site-container grid min-h-screen place-items-center py-16">
+      <div className="relative max-w-2xl border-y border-[var(--line-strong)] py-16 text-center">
+        <p className="eyebrow mb-6">Signal lost / 404</p>
+        <h1 className="display-type text-7xl leading-none text-[var(--chalk)] sm:text-9xl">Wrong orbit.</h1>
+        <p className="mx-auto mt-6 max-w-md text-sm leading-7 text-[var(--ink-soft)]">That page is not part of this system. The main portfolio is still transmitting.</p>
+        <Link href="/" className="text-link mt-8">Return home →</Link>
+      </div>
+    </main>
   );
 }

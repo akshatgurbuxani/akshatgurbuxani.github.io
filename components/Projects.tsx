@@ -1,204 +1,64 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
 import { PROJECTS } from "@/data";
 import type { Project } from "@/types";
+import SectionHeader from "@/components/ui/SectionHeader";
 import ProjectModal from "./ProjectModal";
-import { GitHubIcon, ExternalLinkIcon, SectionHeader, TechBadge } from "@/components/ui";
 
-// =============================================================================
-// Project Card Component
-// =============================================================================
-
-function ProjectCard({ 
-  project, 
-  index, 
-  onOpenModal 
-}: { 
-  project: Project; 
-  index: number;
-  onOpenModal: (project: Project) => void;
-}) {
-  // Get animation direction based on index
-  const directions = [
-    { x: -50, y: 0 }, // left
-    { x: 50, y: 0 },  // right
-    { x: 0, y: -50 }, // up
-    { x: 0, y: 50 },  // down
-  ];
-  const direction = directions[index % 4];
-
+function ProjectMark({ index }: { index: number }) {
   return (
-    <motion.div
-      className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all h-full flex flex-col cursor-pointer"
-      initial={{ opacity: 0, x: direction.x, y: direction.y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true }}
-      whileHover={{ y: -4, rotate: 1 }}
-      onClick={() => onOpenModal(project)}
-    >
-      {/* Card Header with Gradient */}
-      <div className={`h-32 bg-gradient-to-br ${project.gradient} relative overflow-hidden`}>
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute top-4 left-4">
-          <span className="text-5xl font-bold text-white/20">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-        </div>
-        <div className="absolute bottom-4 right-4 flex gap-2">
-          {project.githubUrl && (
-            <a 
-              href={project.githubUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-all"
-              onClick={(e) => e.stopPropagation()}
-              aria-label="GitHub"
-            >
-              <GitHubIcon className="w-5 h-5" />
-            </a>
-          )}
-          {project.certificateUrl && (
-            <a 
-              href={project.certificateUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-amber-400 hover:bg-white/30 transition-all"
-              onClick={(e) => e.stopPropagation()}
-              aria-label="View certificate"
-            >
-              <ExternalLinkIcon className="w-5 h-5" />
-            </a>
-          )}
-          {project.liveUrl && (
-            <a 
-              href={project.liveUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-purple-400 hover:bg-white/30 transition-all"
-              onClick={(e) => e.stopPropagation()}
-              aria-label="Live demo"
-            >
-              <ExternalLinkIcon className="w-5 h-5" />
-            </a>
-          )}
-        </div>
+    <div className="relative h-32 overflow-hidden border-b border-[var(--line)]" aria-hidden="true">
+      <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(rgba(243,239,223,.12)_1px,transparent_1px),linear-gradient(90deg,rgba(243,239,223,.12)_1px,transparent_1px)] [background-size:18px_18px]" />
+      <div className={`absolute h-24 w-24 border border-[var(--line-strong)] ${index % 2 ? "-bottom-7 right-10 rotate-12" : "-right-3 top-5 -rotate-6"}`} />
+      <div className={`absolute grid grid-cols-5 gap-1 ${index % 2 ? "left-8 top-9" : "bottom-6 left-8"}`}>
+        {Array.from({ length: 25 }, (_, pixel) => (
+          <i key={pixel} className={`h-1.5 w-1.5 ${((pixel * 7 + index * 3) % 5) < 3 ? "bg-[var(--ink-soft)]" : "bg-transparent"}`} />
+        ))}
       </div>
-
-      {/* Card Content */}
-      <div className="p-6 flex-1 flex flex-col">
-        <div className="mb-4">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            {project.title}
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-3">
-            {project.date}
-          </p>
-          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">
-            {project.description}
-          </p>
-        </div>
-
-        {/* Tech Stack Preview */}
-        <div className="flex flex-wrap gap-2 mb-4 flex-grow">
-          {project.technologies.slice(0, 3).map((tech, techIndex) => (
-            <TechBadge 
-              key={tech} 
-              label={tech}
-              animated
-              delay={techIndex * 0.05}
-            />
-          ))}
-          {project.technologies.length > 3 && (
-            <TechBadge 
-              label={String(project.technologies.length - 3)}
-              variant="count"
-              animated
-              delay={0.15}
-            />
-          )}
-        </div>
-
-        {/* Show More - Animated on Hover */}
-        <motion.div 
-          className="flex items-center justify-center text-purple-600 dark:text-purple-400 text-sm font-medium mt-auto pt-4 border-t border-gray-200 dark:border-gray-700"
-          initial={{ opacity: 0.6 }}
-          whileHover={{ opacity: 1 }}
-        >
-          <motion.span
-            initial={{ x: 0 }}
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className="flex items-center gap-2"
-          >
-            Show more details
-            <motion.svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              initial={{ x: 0 }}
-              whileHover={{ x: 4 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </motion.svg>
-          </motion.span>
-        </motion.div>
-      </div>
-    </motion.div>
+      <span className="mono absolute right-5 top-4 text-[0.62rem] tracking-[0.12em] text-[var(--ink-faint)]">PLATE / {String(index + 1).padStart(2, "0")}</span>
+    </div>
   );
 }
 
-// =============================================================================
-// Projects Component
-// =============================================================================
-
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = (project: Project) => {
-    setSelectedProject(project);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setTimeout(() => setSelectedProject(null), 300);
-  };
 
   return (
-    <>
-      <div className="w-full bg-gray-50 dark:bg-gray-800 py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <SectionHeader 
-            title="Projects" 
-            description="A collection of my work showcasing various technologies and problem-solving approaches"
-          />
+    <section id="projects" className="site-section">
+      <div className="site-container">
+        <SectionHeader
+          index="03 / Selected work"
+          title="Systems, not demos."
+          description="Experiments and production-minded builds across language models, mathematical reasoning, vision, and real-time decision systems."
+        />
 
-          {/* Projects Grid - Card Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PROJECTS.map((project, index) => (
-              <ProjectCard 
-                key={project.id} 
-                project={project} 
-                index={index}
-                onOpenModal={handleOpenModal}
-              />
-            ))}
-          </div>
-
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-12">
+          {PROJECTS.map((project, index) => {
+            const span = index === 0 || index === 5 ? "lg:col-span-7" : index === 1 || index === 4 ? "lg:col-span-5" : "lg:col-span-6";
+            return (
+              <article key={project.id} className={`paper-panel group flex min-h-[360px] flex-col overflow-hidden ${span} ${index % 3 === 1 ? "lg:translate-y-7" : ""}`}>
+                <ProjectMark index={index} />
+                <div className="relative z-10 flex flex-1 flex-col p-6 sm:p-7">
+                  <p className="mono text-[0.62rem] uppercase tracking-[0.12em] text-[var(--signal)]">{project.date}</p>
+                  <h3 className="display-type mt-3 text-3xl leading-tight text-[var(--chalk)] sm:text-4xl">{project.title}</h3>
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--ink-soft)]">{project.description}</p>
+                  <div className="mt-auto flex items-end justify-between gap-5 pt-7">
+                    <div className="flex flex-wrap gap-x-3 gap-y-1">
+                      {project.technologies.slice(0, 3).map((technology) => <span key={technology} className="mono text-[0.6rem] uppercase tracking-[0.08em] text-[var(--ink-faint)]">{technology}</span>)}
+                    </div>
+                    <button type="button" onClick={() => setSelectedProject(project)} className="shrink-0 border-b border-[var(--line-strong)] bg-transparent pb-1 text-xs font-semibold text-[var(--chalk)] transition-colors hover:border-[var(--signal)] hover:text-[var(--signal)]">
+                      Read record →
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
 
-      {/* Project Modal */}
-      <ProjectModal 
-        project={selectedProject} 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
-      />
-    </>
+      <ProjectModal project={selectedProject} open={Boolean(selectedProject)} onOpenChange={(open) => { if (!open) setSelectedProject(null); }} />
+    </section>
   );
 }

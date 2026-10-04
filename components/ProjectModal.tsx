@@ -1,153 +1,56 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import type { Project } from "@/types";
-import { GitHubIcon, ExternalLinkIcon } from "@/components/ui";
-
-// =============================================================================
-// Project Modal Component
-// =============================================================================
 
 interface ProjectModalProps {
   project: Project | null;
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
-  // Handle ESC key press
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
-
-  if (!project) return null;
-
+export default function ProjectModal({ project, open, onOpenChange }: ProjectModalProps) {
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
-          >
-            <div 
-              className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-2xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto pointer-events-auto m-4 sm:m-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header with Gradient */}
-              <div className={`h-32 sm:h-48 bg-gradient-to-br ${project.gradient} relative overflow-hidden`}>
-                <div className="absolute inset-0 bg-black/20" />
-                <div className="relative z-10 p-4 sm:p-8">
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">{project.title}</h2>
-                  <p className="text-white/90 text-sm sm:text-lg">{project.date}</p>
-                </div>
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-[#081b31]/80 data-[state=closed]:animate-[fadeOut_160ms_ease] data-[state=open]:animate-[fadeIn_160ms_ease]" />
+        {project && (
+          <Dialog.Content className="modal-scrollbar fixed left-1/2 top-1/2 z-50 max-h-[min(88vh,780px)] w-[calc(100%-2rem)] max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto border border-[var(--line-strong)] bg-[var(--paper-deep)] p-6 shadow-2xl focus:outline-none sm:p-10">
+            <div className="mb-8 flex items-start justify-between gap-6 border-b border-[var(--line)] pb-7">
+              <div>
+                <p className="mono mb-3 text-[0.65rem] uppercase tracking-[0.16em] text-[var(--signal)]">Project record · {project.date}</p>
+                <Dialog.Title className="display-type text-4xl leading-none text-[var(--chalk)] sm:text-6xl">{project.title}</Dialog.Title>
               </div>
+              <Dialog.Close className="grid h-11 w-11 shrink-0 place-items-center border border-[var(--line)] bg-transparent text-xl text-[var(--ink-soft)] transition-colors hover:border-[var(--signal)] hover:text-[var(--signal)]" aria-label="Close project details">×</Dialog.Close>
+            </div>
 
-              {/* Content */}
-              <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
-                {/* Description */}
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Overview</h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {project.longDescription || project.description}
-                  </p>
-                </div>
+            <Dialog.Description className="max-w-2xl text-base leading-8 text-[var(--ink-soft)]">
+              {project.longDescription || project.description}
+            </Dialog.Description>
 
-                {/* Key Highlights */}
-                {project.highlights && project.highlights.length > 0 && (
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Key Highlights</h3>
-                    <ul className="space-y-3">
-                      {project.highlights.map((highlight, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-gray-600 dark:text-gray-400">
-                          <span className="text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0 text-xl">▸</span>
-                          <span className="text-lg">{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Tech Stack */}
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Tech Stack</h3>
-                  <div className="flex flex-wrap gap-3">
-                    {project.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all font-medium text-sm sm:text-base"
-                    >
-                      <GitHubIcon className="w-5 h-5" />
-                      View on GitHub
-                    </a>
-                  )}
-                  {project.certificateUrl && (
-                    <a
-                      href={project.certificateUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg hover:from-amber-400 hover:to-orange-400 transition-all font-medium shadow-lg text-sm sm:text-base"
-                    >
-                      <ExternalLinkIcon className="w-5 h-5" />
-                      View Certificate
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-500 hover:to-pink-500 transition-all font-medium shadow-lg text-sm sm:text-base"
-                    >
-                      <ExternalLinkIcon className="w-5 h-5" />
-                      Live Demo
-                    </a>
-                  )}
+            <div className="mt-9 grid gap-9 sm:grid-cols-2">
+              <div>
+                <h3 className="mono text-[0.66rem] uppercase tracking-[0.15em] text-[var(--ink-faint)]">Key outcomes</h3>
+                <ul className="mt-4 space-y-3">
+                  {project.highlights.map((highlight) => <li key={highlight} className="border-l border-[var(--line-strong)] pl-4 text-sm leading-6 text-[var(--chalk)]">{highlight}</li>)}
+                </ul>
+              </div>
+              <div>
+                <h3 className="mono text-[0.66rem] uppercase tracking-[0.15em] text-[var(--ink-faint)]">Tools & methods</h3>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {project.technologies.map((technology) => <span key={technology} className="border border-[var(--line)] px-3 py-1.5 text-xs text-[var(--ink-soft)]">{technology}</span>)}
                 </div>
               </div>
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+
+            <div className="mt-10 flex flex-wrap gap-5 border-t border-[var(--line)] pt-6">
+              {project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noreferrer" className="text-link">View code ↗</a>}
+              {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer" className="text-link">Open live project ↗</a>}
+              {project.certificateUrl && <a href={project.certificateUrl} target="_blank" rel="noreferrer" className="text-link">View certificate ↗</a>}
+            </div>
+          </Dialog.Content>
+        )}
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
-

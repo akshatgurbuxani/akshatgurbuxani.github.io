@@ -1,146 +1,52 @@
-"use client";
-
-import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
 import { PERSONAL, SOCIAL_LINKS } from "@/data";
-import { GitHubIcon, LinkedInIcon, DownloadIcon, ChevronDownIcon } from "@/components/ui";
-
-const AtmosphericBackground = dynamic(() => import("./AtmosphericBackground"), { ssr: false });
 import { PATHS } from "@/constants";
-
-// =============================================================================
-// Animation Variants
-// =============================================================================
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2, delayChildren: 0.3 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] } 
-  },
-};
-
-// =============================================================================
-// Social Link Buttons (Button Style)
-// =============================================================================
-
-function SocialButtons() {
-  const buttonConfig = [
-    {
-      name: "LinkedIn",
-      icon: <LinkedInIcon className="w-5 h-5" />,
-      borderColor: "border-purple-600 dark:border-purple-400",
-      href: SOCIAL_LINKS.find(l => l.name === "LinkedIn")?.url || "#",
-    },
-    {
-      name: "Github",
-      icon: <GitHubIcon className="w-5 h-5" />,
-      borderColor: "border-gray-800 dark:border-gray-300",
-      href: SOCIAL_LINKS.find(l => l.name === "GitHub")?.url || "#",
-    },
-    {
-      name: "Download CV",
-      icon: <DownloadIcon className="w-5 h-5" />,
-      borderColor: "border-gray-800 dark:border-gray-300",
-      href: PATHS.resume,
-      isExternal: true,
-    },
-  ];
-
-  return (
-    <div className="flex flex-wrap justify-center gap-4 mt-8">
-      {buttonConfig.map((button) => (
-        <motion.a
-          key={button.name}
-          href={button.href}
-target={button.isExternal ? "_blank" : undefined}
-            rel={button.isExternal ? "noopener noreferrer" : undefined}
-          className={`px-6 py-3 rounded-full border-2 ${button.borderColor} bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium text-sm sm:text-base`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {button.icon}
-          <span>{button.name}</span>
-        </motion.a>
-      ))}
-    </div>
-  );
-}
-
-// =============================================================================
-// Hero Component
-// =============================================================================
+import PixelScene from "./PixelScene";
 
 export default function Hero() {
+  const github = SOCIAL_LINKS.find((link) => link.name === "GitHub")?.url ?? "#";
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-4">
-      <AtmosphericBackground />
+    <section id="hero" className="relative min-h-[calc(100svh-4rem)] overflow-hidden">
+      <PixelScene />
+      <div className="site-container relative z-10 flex min-h-[calc(100svh-4rem)] flex-col justify-between py-12 sm:py-16 lg:py-20">
+        <div className="grid flex-1 items-center gap-12 lg:grid-cols-12">
+          <div className="max-w-4xl lg:col-span-8">
+            <p className="eyebrow mb-7">AI engineer · San Francisco</p>
+            <h1 className="display-type max-w-[940px] text-[clamp(4rem,10vw,8.8rem)] leading-[0.82] text-[var(--chalk)]">
+              Research,
+              <span className="block pl-[0.36em] italic text-[var(--ink-soft)]">made real.</span>
+            </h1>
+            <p className="mt-9 max-w-xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
+              I&apos;m {PERSONAL.name}, an AI researcher building language, vision, and multi-agent systems that survive the distance from paper to production.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <a href="#projects" className="text-link">Explore selected work <span aria-hidden="true">↓</span></a>
+              <a href={github} target="_blank" rel="noreferrer" className="text-link">GitHub <span aria-hidden="true">↗</span></a>
+              <a href={PATHS.resume} target="_blank" rel="noreferrer" className="text-link">Résumé <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
 
-      <motion.div
-        className="relative z-10 text-center max-w-4xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.p
-          className="text-purple-600 dark:text-purple-400 font-bold tracking-widest uppercase text-sm sm:text-base mb-4"
-          variants={itemVariants}
-        >
-          Welcome to my portfolio
-        </motion.p>
+          <aside className="hidden self-end pb-12 lg:col-span-4 lg:block">
+            <div className="ml-auto w-56 rotate-[-1.5deg] border-l border-[var(--line-strong)] pl-5 text-sm leading-6 text-[var(--ink-soft)]">
+              <span className="mono mb-2 block text-[0.62rem] uppercase tracking-[0.16em] text-[var(--signal)]">Current coordinates</span>
+              Building production AI at <a href={PERSONAL.companyUrl} target="_blank" rel="noreferrer" className="text-[var(--chalk)] underline decoration-dotted underline-offset-4">{PERSONAL.company}</a>.
+            </div>
+          </aside>
+        </div>
 
-        <motion.h1
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold mb-6 tracking-tight text-gray-900 dark:text-white"
-          variants={itemVariants}
-        >
-          {PERSONAL.name.split(" ").map((part, i) => (
-            <span key={i} className={i === 1 ? "bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent block sm:inline" : ""}>
-              {part}{" "}
-            </span>
+        <dl className="grid border-y border-[var(--line)] sm:grid-cols-3">
+          {[
+            ["Focus", "Applied AI systems"],
+            ["Approach", "Research → production"],
+            ["Signal", "Available for conversation"],
+          ].map(([label, value], index) => (
+            <div key={label} className={`flex items-center justify-between gap-4 py-4 sm:block sm:px-6 ${index ? "sm:border-l sm:border-[var(--line)]" : "sm:pl-0"}`}>
+              <dt className="mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">{label}</dt>
+              <dd className="mt-1 text-sm text-[var(--chalk)]">{value}</dd>
+            </div>
           ))}
-        </motion.h1>
-
-        <motion.h2
-          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 text-gray-700 dark:text-gray-300"
-          variants={itemVariants}
-        >
-          {PERSONAL.title} @{" "}
-          <a
-            href={PERSONAL.companyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-300 dark:hover:to-pink-300 transition-all duration-300 underline decoration-2 underline-offset-4 decoration-purple-600/50 dark:decoration-purple-400/50 hover:decoration-purple-600 dark:hover:decoration-purple-400"
-          >
-            {PERSONAL.company}
-          </a>
-        </motion.h2>
-
-        <motion.p
-          className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed px-4"
-          variants={itemVariants}
-        >
-          {PERSONAL.tagline}
-        </motion.p>
-
-        <motion.div className="flex flex-col items-center" variants={itemVariants}>
-          <SocialButtons />
-          
-          <motion.div className="mt-16" animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-            <a href="#about" className="text-gray-400 hover:text-purple-600 transition-colors" aria-label="Scroll to about section">
-              <ChevronDownIcon className="w-8 h-8" />
-            </a>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    </div>
+        </dl>
+      </div>
+    </section>
   );
 }
